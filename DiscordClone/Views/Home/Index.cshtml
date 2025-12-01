@@ -1,8 +1,120 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    .container{
+        margin-bottom: 100px;
+    }
+
+    .sidebar {
+        width: 220px;
+        display: flex;
+        padding: 20px 10px;
+    }
+
+        .sidebar a {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: block;
+            color: var(--discord-text);
+            font-weight: 500;
+        }
+
+            .sidebar a:hover {
+                background-color: var(--discord-medium);
+                color: var(--discord-blurple);
+            }
+
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+        .navbar a {
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+    .card {
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--discord-blurple);
+        color: white;
+        border-radius: 10px;
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        .hero button {
+            font-size: 1rem;
+        }
+</style>
+<div class="sidebar">
+    <h2>Discord</h2>
+    <a asp-page="/Index">Home</a>
+    <a asp-page="/Servers">Servers</a>
+    <a asp-page="/Friends">Friends</a>
+</div>
+
+<div class="main-content">
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-brand">Home</div>
+        <div>
+            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div>
+            <h1>Welcome to Your Discord Clone</h1>
+            <p>Connect, chat, and hang out with your friends.</p>
+            <a asp-page="/Register" class="btn btn-primary">Get Started</a>
+        </div>
+        <div>
+            <img src="~/images/logo.png" alt="Discord Illustration" width="200">
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="card">
+        <h3>Join a Server</h3>
+        <p>Discover communities that share your interests.</p>
+        <a asp-page="/Servers" class="btn btn-secondary">Explore</a>
+    </div>
+
+    <div class="card">
+        <h3>Start Chatting</h3>
+        <p>Connect instantly with friends via text, voice, or video.</p>
+        <a asp-page="/Chat" class="btn btn-secondary">Open Chat</a>
+    </div>
+
 </div>
