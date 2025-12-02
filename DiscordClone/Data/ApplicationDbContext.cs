@@ -32,7 +32,9 @@ namespace DiscordClone.Data
                 entity.ToTable("UserProfile");
                 entity.HasKey(x => x.Id);
 
-                entity.Property(x => x.Username).HasMaxLength(255);
+                entity.Property(x => x.AvatarURL).HasMaxLength(50);
+                entity.Property(x => x.BIO).HasMaxLength(190);
+                entity.Property(x => x.Username).HasMaxLength(50);
                 entity.HasOne(x => x.User)
                   .WithOne(u => u.Profile)
                   .HasForeignKey<UserProfile>(x => x.UserId)
@@ -46,6 +48,8 @@ namespace DiscordClone.Data
             {
                 entity.ToTable("Message");
                 entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Value).HasMaxLength(2000);
 
                 entity.HasOne(x => x.User)
                       .WithMany(u => u.Messages)
@@ -66,6 +70,8 @@ namespace DiscordClone.Data
                 entity.ToTable("Channel");
                 entity.HasKey(x => x.Id);
 
+                entity.Property(x => x.Name).HasMaxLength(2000);
+
                 entity.HasOne(x => x.Server)
                       .WithMany(c => c.Channel)
                       .HasForeignKey(x => x.ServerId)
@@ -76,7 +82,7 @@ namespace DiscordClone.Data
                      .HasForeignKey(x => x.FriendShipId)
                      .OnDelete(DeleteBehavior.Cascade);
 
-                entity.Property(x => x.Name).HasMaxLength(255);
+                entity.Property(x => x.Name).HasMaxLength(50);
             });
 
             // -------------------------
@@ -107,6 +113,8 @@ namespace DiscordClone.Data
             {
                 entity.ToTable("Server");
                 entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Name).HasMaxLength(50);
 
                 entity.HasOne(x => x.User)
                       .WithMany(u => u.Server)
@@ -141,6 +149,9 @@ namespace DiscordClone.Data
                 entity.ToTable("Role");
                 entity.HasKey(x => x.Id);
 
+                entity.Property(x => x.Name).HasMaxLength(50);
+                entity.Property(x => x.Color).HasMaxLength(50);
+
                 entity.HasOne(x => x.ServerMember)
                       .WithMany(m => m.Roles)
                       .HasForeignKey(x => x.ServerMemberId)
@@ -159,6 +170,8 @@ namespace DiscordClone.Data
             {
                 entity.ToTable("VoiceChannel");
                 entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Name).HasMaxLength(50);
 
                 entity.HasOne(x => x.Server)
                       .WithMany(s => s.VoiceChannel)
