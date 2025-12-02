@@ -9,8 +9,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DiscordClone.styles.css" asp-append-version="true" />
 </head>
+
 <body>
-    <header>
+    @if (User.IsInRole("Member"))
+    {
+
+    }
+    else
+    {
+<header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">DiscordClone</a>
@@ -28,22 +35,32 @@
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
-
                 </div>
             </div>
         </nav>
     </header>
+    }
+    
+
+    
     <div class="container main-container">
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
+            
+        @if(!User.IsInRole("Member"))
+        {
+            <footer class="border-top footer text-muted">
+                <div class="text-center">
+                    &copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
+            </footer>
+        }
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="text-center">
-            &copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+   
+    
+    
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
