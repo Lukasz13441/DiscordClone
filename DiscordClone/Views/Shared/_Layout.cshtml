@@ -46,17 +46,17 @@
     <div class="container main-container">
         <main role="main">
             @RenderBody()
-            
-        @if(!User.IsInRole("Member"))
-        {
-            <footer class="border-top footer text-muted">
-                <div class="text-center">
-                    &copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </div>
-            </footer>
-        }
-        </main>
-    </div>
+
+
+		</main>
+	</div>@if(!User.IsInRole("Member"))
+	{
+		<footer class="border-top footer text-muted">
+			<div class="text-center">
+				&copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+			</div>
+		</footer>
+	}
    
     
     
