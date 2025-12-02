@@ -15,3 +15,16 @@ Umożliwia: ---.
 # Instalacja / Uruchomienie
 
 1. Sklonuj repozytorium
+2. Otwórz projekt w Visual Stuido
+3. Uruchom aplikację: Ctrl+F5
+
+# Plany
+
+- Rozbudowa UI
+- Obsługa różnych kanałów / serwerów / prywatnych wiadomości
+
+# Autor / Współtwórcy
+
+Lukasz13441 — autor projektu
+mcskilk7 - współtwórca projektu
+Kasztan271 - współtwórca projektu
