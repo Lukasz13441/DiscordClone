@@ -47,6 +47,11 @@
                 <div class="user-info">
                     <img src="https://i.pravatar.cc/40" class="avatar" />
                     <span>YourUser</span>
+                     <!-- log out -->
+                    <form  class="form-inline text-light" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button  type="submit" class="nav-link btn btn-link text-light">Logout</button>
+                    </form>
+  
                 </div>
                 <i class="fa-solid fa-gear"></i>
             </div>
