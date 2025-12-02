@@ -22,20 +22,4 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    margin-bottom: 60px;
-    animation: moveBackground 20s linear infinite;
-}
-
-@keyframes moveBackground {
-    0% {
-        background-size: 100%;
-    }
-
-    50% {
-        background-size: 110%; /* zoom in slightly */
-    }
-
-    100% {
-        background-size: 100%; /* back to normal */
-    }
 }
