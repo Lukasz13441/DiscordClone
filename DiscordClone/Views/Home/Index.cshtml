@@ -4,7 +4,7 @@
 <style>
 
     .container{
-        margin-bottom: 100px;
+        margin-bottom: 60px;
     }
 
     .sidebar {
@@ -33,22 +33,6 @@
         padding: 30px;
         overflow-y: auto;
     }
-
-    .navbar {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 20px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-        .navbar a {
-            margin-left: 15px;
-            text-decoration: none;
-        }
 
     .card {
         margin-bottom: 20px;
@@ -83,14 +67,6 @@
 </div>
 
 <div class="main-content">
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="navbar-brand">Home</div>
-        <div>
-            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
-            <a asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
-        </div>
-    </div>
 
     <!-- Hero Section -->
     <div class="hero">
