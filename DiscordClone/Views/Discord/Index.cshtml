@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model List<Server>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8" />
@@ -15,10 +16,13 @@
         <div class="servers-bar">
             <div class="server-icon home">DC</div>
 
-            <div class="server-icon">A</div>
-            <div class="server-icon">B</div>
-            <div class="server-icon">C</div>
-            <div ac class="server-icon">+</div>
+            @foreach (var server in Model)
+            {
+                <div>@server.Name (@server.Id)</div>
+            }
+
+
+            <div class="server-icon">+</div>
         </div>
         
 
