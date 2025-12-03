@@ -24,3 +24,12 @@ body {
     background-position: center;
 }
 
+.main-area {
+    margin-left: 100px;
+    background-color: #36393f;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color:
+}
+

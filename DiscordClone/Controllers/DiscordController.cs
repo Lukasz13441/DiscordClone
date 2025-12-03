@@ -52,5 +52,10 @@ namespace DiscordClone.Controllers
             return View();
         }
 
+        public IActionResult CreateNewServer() 
+        {             
+            return View();
+        }
+
     }
 }

@@ -1,0 +1,43 @@
+﻿@page
+
+<link rel="stylesheet" href="~/css/create-new-server.css"/>
+
+<div class="main-area">
+    <div class="create-server-modal">
+
+        <form method="post" enctype="multipart/form-data" class="modal-content">
+
+            <h2>Create a Server</h2>
+            <p class="subtitle">
+                Your server is where your community hangs out.
+            </p>
+
+            <!-- Upload Icon -->
+            <div class="icon-upload">
+                <label for="icon">
+                    <div class="upload-circle">
+                        <i class="fa-solid fa-upload"></i>
+                        <span>Upload Icon</span>
+                    </div>
+                </label>
+                <input type="file" id="icon" name="ServerIcon" hidden />
+            </div>
+
+            <!-- Server Name Field -->
+            <div class="input-group">
+                <label>Server Name</label>
+                <input type="text" placeholder="Enter server name" required />
+            </div>
+
+            <!-- Validation -->
+            <div asp-validation-summary="All" class="validation"></div>
+
+            <!-- Buttons -->
+            <div class="buttons">
+                <a asp-page="/Servers/Index" class="cancel-btn">Cancel</a>
+                <button type="submit" class="create-btn">Create</button>
+            </div>
+
+        </form>
+    </div>
+</div>
