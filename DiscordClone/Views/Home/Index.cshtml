@@ -2,18 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
+<link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true"/>
 
-    <link rel="stylesheet" href="~/css/home-index.css" />
-    <div class="sidebar">
-    <h2>Discord</h2>
-    <a asp-page="/Index">Home</a>
-    <a asp-page="/Servers">Servers</a>
-    <a asp-page="/Friends">Friends</a>
-    <partial name="_LoginPartial" />
-</div>
 
 <div class="main-content">
-
+    <div class="sidebar">
+        <h2>Discord</h2>
+        <a asp-page="/Index">Home</a>
+        <a asp-page="/Servers">Servers</a>
+        <a asp-page="/Friends">Friends</a>
+    </div>
     <!-- Hero Section -->
     <div class="hero">
         <div>

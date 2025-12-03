@@ -1,12 +1,22 @@
-﻿.container {
+﻿@media only screen and (max-width: 600px) {
+    .sidebar{
+        display: none;
+    }
+}
+
+.container {
+    margin-inline: auto;
     margin-bottom: 60px;
 }
 
 .sidebar {
-    width: 220px;
+    width: 240px;
     display: flex;
     padding: 20px 10px;
-}
+    margin-bottom: 15px;
+    margin-left: 30px;
+    padding-bottom: 0px;
+}   
 
     .sidebar a {
         text-decoration: none;
@@ -24,9 +34,10 @@
         }
 
 .main-content {
+    margin-inline: auto;
     flex: 1;
-    padding: 30px;
     overflow-y: auto;
+    width: 80%;
 }
 
 .card {
@@ -53,3 +64,9 @@
     .hero button {
         font-size: 1rem;
     }
+.render-body {
+    background-color: #36393e;
+    border-radius: 30px;
+    margin-inline: auto;
+    width: 80%;
+}
