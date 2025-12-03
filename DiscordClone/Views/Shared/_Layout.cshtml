@@ -13,11 +13,34 @@
 <body>
     @if (User.IsInRole("Member"))
     {
+        <link rel="stylesheet" href="~/css/side-header.css" />
+        <!-- SIDE NAVIGATION -->
+        <div class="side-nav">
+            <div class="logo">
+                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">
+                    DiscordClone
+                </a>
+            </div>
+
+            <ul class="nav flex-column mt-3">
+                <li class="nav-item">
+                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </li>
+            </ul>
+
+            <div class="login-area mt-auto">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
 
     }
     else
     {
-<header>
+    <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">DiscordClone</a>
@@ -43,13 +66,12 @@
     
 
     
-    <div class="container main-container">
-        <main role="main">
+    <div class="content-wrapper">
+        <main role="main" class="pb-3 render-body">
             @RenderBody()
-
-
-		</main>
-	</div>@if(!User.IsInRole("Member"))
+        </main>
+    </div>
+    @if(!User.IsInRole("Member"))
 	{
 		<footer class="border-top footer text-muted">
 			<div class="text-center">

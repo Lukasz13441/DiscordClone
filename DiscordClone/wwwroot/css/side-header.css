@@ -1,0 +1,56 @@
+﻿/* ====== SIDE NAV BAR ====== */
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    background-color: #2f3136; /* Discord-style dark */
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #1a1b1d;
+}
+
+    .side-nav .logo a {
+        font-size: 22px;
+        font-weight: bold;
+        color: white !important;
+        text-decoration: none;
+    }
+
+    .side-nav .nav-link {
+        color: #b9bbbe !important;
+        padding: 10px 5px;
+        border-radius: 4px;
+    }
+
+        .side-nav .nav-link:hover {
+            background-color: #3a3c43;
+            color: white !important;
+        }
+
+.login-area {
+    padding-top: 20px;
+}
+
+/* Width of your left header */
+.side-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: #1e1e1e;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+}
+
+/* PUSH CONTENT RIGHT */
+.content-wrapper{
+    margin-left: 240px !important; /* same as side-nav width */
+}
+
+
