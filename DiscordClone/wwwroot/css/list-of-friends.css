@@ -1,0 +1,46 @@
+﻿.friend-list {
+    height: 100%;
+    width: 100%;
+    background-color: #2f3136;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #36393f;
+    transition: background-color 0.2s;
+}
+
+    .friend:hover {
+        background-color: #40444b;
+    }
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: bold;
+    color: #dcddde;
+}
+
+.status {
+    font-size: 13px;
+    color: #b5bac1;
+}

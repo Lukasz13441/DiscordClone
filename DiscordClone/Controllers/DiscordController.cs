@@ -47,5 +47,10 @@ namespace DiscordClone.Controllers
             return View(new List<Server>());
         }
 
+        public IActionResult ListOfFriends()
+        {
+            return View();
+        }
+
     }
 }

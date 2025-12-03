@@ -13,29 +13,29 @@
 <body>
     @if (User.IsInRole("Member"))
     {
-        <link rel="stylesheet" href="~/css/side-header.css" />
-        <!-- SIDE NAVIGATION -->
-        <div class="side-nav">
-            <div class="logo">
-                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">
-                    DiscordClone
-                </a>
-            </div>
 
-            <ul class="nav flex-column mt-3">
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
+			<link rel="stylesheet" href="~/css/side-header.css" />
+        <link rel="stylesheet" href="~/css/discord-messages.css" />
+			<!-- SIDE NAVIGATION -->
+			<div class="side-nav">
+				<div class="servers">
+                    <img src="~/images/profile4.png" />
+                </div>
+                <div class="friends">
+                    <ul type="none">
+                        <li class="friend-on-list"><img class="avatar" src="/images/profile1.png" />Zbychu</li>
+                    <li class="friend-on-list"><img class="avatar" src="/images/profile2.png" />Janusz</li>
+                    <li class="friend-on-list"><img class="avatar" src="/images/profile3.png" />Kazik</li>
+                    <li class="friend-on-list"><img class="avatar" src="/images/profileSecret.jpg" />Cwel</li>
+				    </ul>
+                </div>
+                <div class="profile">
+                <img class="avatar" src="~/images/me.jpg" /> <h3>My Profile</h3>
+                </div>
+                <div class="continue-border"></div>
+			</div>
 
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>
-            </ul>
-
-            <div class="login-area mt-auto">
-                <partial name="_LoginPartial" />
-            </div>
-        </div>
+        
 
     }
     else
@@ -68,6 +68,9 @@
     
     <div class="content-wrapper">
         <main role="main" class="pb-3 render-body">
+            <div class="mess">
+
+            </div>
             @RenderBody()
         </main>
     </div>
