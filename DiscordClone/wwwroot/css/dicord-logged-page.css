@@ -1,10 +1,8 @@
 ﻿/* ===== GLOBAL ===== */
-.main-container {
-    margin-bottom: 0px;
-}
-
-body {
+html, body {
     margin: 0;
+    height: 100%;
+    overflow: hidden;
     background-color: #202225;
     font-family: "Segoe UI", sans-serif;
     color: #fff;
@@ -13,7 +11,10 @@ body {
 .discord-layout {
     display: grid;
     grid-template-columns: 80px 260px 1fr;
-    height: 99.8vh;
+    height: 100vh;
+    width: 100%; /* FIX */
+    max-width: 100%; /* FIX */
+    overflow: hidden; /* Prevent horizontal scroll */
 }
 
 /* ===== SERVERS BAR ===== */
@@ -57,6 +58,7 @@ body {
     flex-direction: column;
     padding: 10px;
     border-right: 1px solid #1a1b1d;
+    overflow-y: auto; /* ONLY channel list scrolls */
 }
 
 .channel-header {
@@ -115,6 +117,7 @@ body {
     background-color: #36393f;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent gap */
 }
 
 .chat-header {
@@ -126,8 +129,8 @@ body {
 
 .messages {
     padding: 20px;
-    overflow-y: auto;
-    flex-grow: 1;
+    overflow-y: auto; /* ONLY messages scroll */
+    flex: 1;
 }
 
 .message {
@@ -165,3 +168,5 @@ body {
         background-color: #303338;
         color: white;
     }
+
+
