@@ -133,7 +133,7 @@ namespace DiscordClone.Areas.Identity.Pages.Account
                     {
                         UserId = userId,
                         Username = Input.Email.Split('@')[0],
-                        AvatarURL = "~/images/default_avatar.png",
+                        AvatarURL = "/images/default_avatar.png",
                         BIO = "",
                         Tag = new Random().Next(1000, 9999)
                     });

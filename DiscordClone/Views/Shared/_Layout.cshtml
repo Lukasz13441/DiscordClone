@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,14 +20,24 @@
 			<!-- SIDE NAVIGATION -->
 			<div class="side-nav">
 				<div class="servers">
-                    <img src="~/images/profile4.png" />
+                    <a asp-controller="Discord" asp-action="Index"> <img src="~/images/profile4.png" /></a>
+                    @foreach (var server in ViewBag.Servers)
+                    {
+                        <a asp-controller="Discord" asp-action="Server" asp-route-id="@server.Id">
+                        <img src="@server.IconURL" alt="Alternate Text" />
+                        </a>
+                    }
+                    <a asp-controller="Discord" asp-action="CreateNewServer">+</a>                    
                 </div>
                 <div class="friends">
                     <ul type="none">
-                        <li class="friend-on-list"><img class="avatar" src="/images/profile1.png" />Zbychu</li>
-                    <li class="friend-on-list"><img class="avatar" src="/images/profile2.png" />Janusz</li>
-                    <li class="friend-on-list"><img class="avatar" src="/images/profile3.png" />Kazik</li>
-                    <li class="friend-on-list"><img class="avatar" src="/images/profileSecret.jpg" />Cwel</li>
+                        <li><a asp-action="ManageFriends" asp-controller="Discord">Dodaj przyjaciela</a></li>
+                        @foreach (var friend in ViewBag.Friends)
+                        {
+                            <li class="friend-on-list"><img class="avatar" src="@friend.AvatarURL"/>@friend.Username</li>
+                        }
+                        
+                        <li class="friend-on-list"><img class="avatar" src="/images/profileSecret.jpg" />Cwel</li>
                     <li><partial name="_LoginPartial" /></li>
 				    </ul>
                 </div>
