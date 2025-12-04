@@ -57,5 +57,10 @@ namespace DiscordClone.Controllers
             return View();
         }
 
+        public IActionResult ManageFriends()
+        {  
+            return View();
+        }
+
     }
 }
