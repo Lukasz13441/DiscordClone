@@ -1,0 +1,6 @@
+﻿@model DiscordClone.Models.Channel
+<form asp-action="AddChanelForm">
+	<input hidden type="number" asp-for="ServerId" value="@ViewBag.Id" />
+	<input asp-for="Name"/>
+	<button type="submit">Dodaj kanal</button>
+</form>

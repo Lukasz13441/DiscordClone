@@ -1,0 +1,79 @@
+﻿.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 100vh;
+    background-color: #2f3136;
+    padding: 10px 15px;
+    display: flex;
+    border-right: 1px solid #1a1b1d;
+    flex-wrap: wrap;
+    padding-left:0px;
+}
+.servers {
+    padding-top: 20px;
+    width: 20%;
+    height: 95vh;
+    background-color: #2f3136;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: center;
+}
+    .servers img{
+
+        width: 80%;
+        height: 50px;
+        margin: 10%;
+        margin-bottom: 10px;
+        border-radius: 25%;
+        cursor: pointer;
+    }
+.friends {
+    padding-top: 20px;
+    width: 80%;
+    height: 95vh;
+    background-color: #2f3136;
+    flex-direction: column;
+    overflow: auto;
+    border: 1px solid lightgray;
+    border-bottom: 0px;
+    border-radius:10px 10px 0px 0px;
+}
+    .friend-on-list {
+        margin: 0px, 5px;
+        height: 50px;
+        margin-right: 10px;
+        vertical-align: middle;
+        font-size: 18px;
+    }
+        .friend-on-list img {
+           margin-right: 10px;
+        }
+.profile {
+    width: 94.6%;
+    margin: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    height: 5vh;
+    background-color: #36373E;
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    margin-right:0px;
+}
+
+.continue-border {
+    height: 100px;
+    border-right: 1px solid lightgray;
+    width: 1px;
+}
+
+/* PUSH CONTENT RIGHT */
+
+.content-wrapper {
+    margin-left: 240px !important; /* same as side-nav width */
+}

@@ -1,0 +1,75 @@
+﻿@model DiscordClone.Models.FriendString
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord-like Friends Page</title>
+    <link rel="stylesheet" href="~/css/manage-friends.css">
+</head>
+<body>
+
+    <div class="discord-grid">
+
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">DF</div>
+            <nav class="icons">
+                <div class="icon">🏠
+</div>
+                <div class="icon">💬
+</div>
+                <div class="icon">👥
+</div>
+                <div class="icon">⚙️
+</div>
+            </nav>
+        </aside>
+
+        <!-- Main content -->
+        <section class="main">
+
+
+                <!-- Requests -->
+                <div class="panel">
+                    <h2>Incoming Requests</h2>
+                    <ul>
+                        @foreach(var request in ViewBag.PendingFriends)
+                    {
+                           <li class="request">
+                            <div>
+                                <strong>@request.Username</strong>
+                                <div class="handle">@(request.Username + "#" + request.Tag)</div>
+                            </div>
+                            <div class="actions">
+                                <a class="btna" asp-action="Accept" asp-route-id="@request.UserId">Accept</a>
+                                <a class="btna ghost" asp-action="Index">Ignore</a>
+                            </div>
+                        </li>                 
+                    }
+
+                        
+                    </ul>
+                </div>
+
+                <!-- Add Friend -->
+                <div class="panel">
+                    <h2>Add Friend</h2>
+                    <form asp-action="AddFriend" asp-controller="Discord">
+                    <input type="text" placeholder="username#1234" asp-for="Name">
+                    <button type="submit" class="btna primary">Send Request</button>
+                    </form>
+                    <h3 style="margin-top:20px;">Other Users</h3>
+                    <ul>
+                        <li>Anna <span class="handle">anna#8888</span></li>
+                        <li>Chris <span class="handle">chris#4444</span></li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

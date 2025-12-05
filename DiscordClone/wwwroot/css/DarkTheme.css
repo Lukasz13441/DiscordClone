@@ -1,0 +1,123 @@
+﻿/* ===== DISCORD GLOBAL COLORS ===== */
+:root {
+    --discord-darkest: #1e1f22;
+    --discord-dark: #2b2d31;
+    --discord-medium: #313338;
+    --discord-light: #383a40;
+    --discord-text: #dcddde;
+    --discord-muted: #b5bac1;
+    --discord-link: #00a8fc;
+    --discord-blurple: #5865F2;
+    --discord-danger: #ed4245;
+}
+
+/* ===== BACKGROUND + TEXT ===== */
+body {
+    background-color: var(--discord-darkest);
+    color: var(--discord-text);
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    background-image: url(~/wwwroot/images/IndexBackground.jp);
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background-color: var(--discord-dark) !important;
+    color: var(--discord-text) !important;
+    border-bottom: 1px solid #111;
+}
+
+    .navbar a, .navbar-brand {
+        color: var(--discord-text) !important;
+    }
+
+/* ===== CARDS / PANELS / MODALS ===== */
+.card, .modal-content, .container, .card-body {
+    background-color: var(--discord-medium) !important;
+    color: var(--discord-text) !important;
+    border-radius: 10px;
+    border: 1px solid #222;
+}
+
+/* ===== LINKS ===== */
+a, .btn-link {
+    color: var(--discord-link) !important;
+}
+
+    a:hover {
+        color: #22b5ff !important;
+    }
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background-color: var(--discord-blurple) !important;
+    border-color: var(--discord-blurple) !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        opacity: 0.92;
+    }
+
+.btn-secondary {
+    background-color: var(--discord-light) !important;
+    border-color: var(--discord-light) !important;
+    color: var(--discord-text) !important;
+}
+
+.btn-danger {
+    background-color: var(--discord-danger) !important;
+    border-color: var(--discord-danger) !important;
+    color: white !important;
+}
+
+/* ===== INPUTS ===== */
+input, select, textarea, .form-control {
+    background-color: var(--discord-dark) !important;
+    border: 1px solid #1a1b1e !important;
+    color: var(--discord-text) !important;
+    border-radius: 6px;
+}
+
+    input:focus, .form-control:focus {
+        border-color: var(--discord-blurple) !important;
+        box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.5) !important;
+    }
+
+/* ===== TABLES ===== */
+.table {
+    color: var(--discord-text);
+    background-color: var(--discord-medium);
+}
+
+    .table thead {
+        background-color: var(--discord-dark);
+    }
+
+    .table tbody tr {
+        background-color: var(--discord-medium);
+    }
+
+        .table tbody tr:nth-child(even) {
+            background-color: var(--discord-dark);
+        }
+
+/* ===== CHECKBOXES & RADIO ===== */
+input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--discord-blurple);
+}
+
+/* ===== MISC ===== */
+hr {
+    border-color: #1a1b1e;
+}
+
+footer {
+    background-color: var(--discord-dark) !important;
+    color: var(--discord-muted) !important;
+    border-top: 1px solid #111;
+}
+
+.main-part-discord{
+
+}

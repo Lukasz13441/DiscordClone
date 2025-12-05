@@ -8,9 +8,9 @@ namespace DiscordClone.Models
 
         public string Name { get; set; }
 
-        public int ServerId { get; set; }
+        public int? ServerId { get; set; }
 
-        public int FriendShipId { get; set; }
+        public int? FriendShipId { get; set; }
 
         // Navigation
         public virtual ICollection<Message> Messages { get; set; }

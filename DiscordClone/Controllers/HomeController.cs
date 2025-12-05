@@ -15,7 +15,12 @@ namespace DiscordClone.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Discord");
+            }
+            else
+                return View();
         }
 
         public IActionResult Privacy()
