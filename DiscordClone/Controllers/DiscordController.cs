@@ -1,7 +1,4 @@
-﻿using DiscordClone.Models;
-using DiscordClone.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace DiscordClone.Controllers
