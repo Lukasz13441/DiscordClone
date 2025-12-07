@@ -1,0 +1,18 @@
+﻿ <nav class="bg-dark d-flex flex-column align-items-center py-3" style="width:70px;">
+        <a asp-controller="Discord" asp-action="Index" class="mb-3">
+            <img src="~/images/profile4.png" class="rounded-circle img-fluid" style="width:50px; height:50px;" />
+        </a>
+
+        @foreach (var server in ViewBag.Servers)
+        {
+            <a asp-controller="Discord" asp-action="Server" asp-route-id="@server.Id" class="mb-2">
+                <img src="@server.IconURL" class="rounded-circle img-fluid border" 
+                     alt="@server.Name" style="width:50px; height:50px;" />
+            </a>
+        }
+
+        <a asp-controller="Discord" asp-action="CreateNewServer" 
+           class="btn btn-outline-light rounded-circle mt-auto" style="width:50px; height:50px; font-size:24px;">
+            +
+        </a>
+    </nav>

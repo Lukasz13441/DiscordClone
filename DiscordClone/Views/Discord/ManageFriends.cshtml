@@ -4,72 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord-like Friends Page</title>
+    <title>Manage Friends</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/manage-friends.css">
 </head>
-<body>
+<body class="bg-dark text-light">
 
-    <div class="discord-grid">
+<div class="container-fluid vh-100 d-flex p-0">
 
-        <!-- Left Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">DF</div>
-            <nav class="icons">
-                <div class="icon">🏠
-</div>
-                <div class="icon">💬
-</div>
-                <div class="icon">👥
-</div>
-                <div class="icon">⚙️
-</div>
-            </nav>
-        </aside>
+    <!-- LEWY PASEK -->
+    
+    <partial name="Servers" />
 
-        <!-- Main content -->
-        <section class="main">
+    <!-- GŁÓWNY PANEL -->
+    <partial name="FriendsList" />
 
+            
 
-                <!-- Requests -->
-                <div class="panel">
-                    <h2>Incoming Requests</h2>
-                    <ul>
-                        @foreach(var request in ViewBag.PendingFriends)
-                    {
-                           <li class="request">
-                            <div>
-                                <strong>@request.Username</strong>
-                                <div class="handle">@(request.Username + "#" + request.Tag)</div>
-                            </div>
-                            <div class="actions">
-                                <a class="btna" asp-action="Accept" asp-route-id="@request.UserId">Accept</a>
-                                <a class="btna ghost" asp-action="Index">Ignore</a>
-                            </div>
-                        </li>                 
-                    }
+            <!-- == Sekcja zaproszeń == -->
+       <div class="container-fluid">
+            <div>
+                <div class="card bg-secondary text-light shadow">
+                    <div class="card-body">
+                        <h2 class="card-title mb-3">Incoming Requests</h2>
+                        <ul class="list-group list-group-flush">
 
-                        
-                    </ul>
+                            @foreach(var request in ViewBag.PendingFriends)
+                            {
+                                <li class="list-group-item bg-secondary d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@request.Username</strong>
+                                        <div class="text-white-50">@(request.Username + "#" + request.Tag)</div>
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Accept" asp-route-id="@request.UserId" class="btn btn-success btn-sm">Accept</a>
+                                        <a asp-action="Index" class="btn btn-outline-light btn-sm">Ignore</a>
+                                    </div>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
                 </div>
-
-                <!-- Add Friend -->
-                <div class="panel">
-                    <h2>Add Friend</h2>
-                    <form asp-action="AddFriend" asp-controller="Discord">
-                    <input type="text" placeholder="username#1234" asp-for="Name">
-                    <button type="submit" class="btna primary">Send Request</button>
-                    </form>
-                    <h3 style="margin-top:20px;">Other Users</h3>
-                    <ul>
-                        <li>Anna <span class="handle">anna#8888</span></li>
-                        <li>Chris <span class="handle">chris#4444</span></li>
-                    </ul>
-                </div>
-
             </div>
-        </section>
 
+
+            <!-- == Sekcja dodawania znajomych == -->
+            <div>
+                <div class="card bg-secondary text-light shadow">
+                    <div class="card-body">
+                        <h2 class="card-title mb-3">Add Friend</h2>
+
+                        <form asp-action="AddFriend" asp-controller="Discord" class="input-group mb-3">
+                            <input asp-for="Name" type="text" class="form-control" placeholder="username#1234" />
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </form>
+
+                        <h5 class="mb-2">Other Users</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item bg-secondary">Anna <span class="text-white-50">anna#8888</span></li>
+                            <li class="list-group-item bg-secondary">Chris <span class="text-white-50">chris#4444</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
+    </section>
+
+</div>
 
 </body>
 </html>
