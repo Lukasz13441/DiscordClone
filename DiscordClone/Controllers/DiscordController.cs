@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DiscordClone.Models;
+using DiscordClone.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace DiscordClone.Controllers
@@ -96,5 +99,18 @@ namespace DiscordClone.Controllers
             _service.CreateChannel((int)model.ServerId, model);
             return RedirectToAction("Server",new { Id = model.ServerId}); 
         }
+
+        public IActionResult SendMessage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SendMessageForm(int ChannelId, int UserId, string MessageValue)
+        {
+            _service.SendMessage(ChannelId, UserId, MessageValue);
+            return RedirectToAction("Server");
+        }
+
     }
 }

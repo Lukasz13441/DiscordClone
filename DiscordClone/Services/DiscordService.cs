@@ -180,5 +180,21 @@ namespace DiscordClone.Services
             });
             _context.SaveChanges();
         }
+
+        public void SendMessage(int channelId, int userId, string messageValue)
+        {
+            var channel = _context.Channels.FirstOrDefault(c => c.Id == channelId);
+            var user = _context.UserProfiles.FirstOrDefault(u => u.Id == userId);
+            if (channel == null || user == null || string.IsNullOrEmpty(messageValue)) return;
+            _context.Messages.Add(new Message
+            {
+                ChannelId = channel.Id,
+                UserId = user.Id,
+                Value = messageValue,
+                CreatedAt = DateTime.Now
+            });
+            _context.SaveChanges();
+        }
+
     }
 }

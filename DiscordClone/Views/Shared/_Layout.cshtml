@@ -1,113 +1,123 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DiscordClone</title>
+
+    <!-- Bootstrap i podstawowe style -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/DarkTheme.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DiscordClone.styles.css" asp-append-version="true" />
-</head>
 
+    @* Dodatkowe style dla użytkowników w roli Member *@
+    @if (User.IsInRole("Member"))
+    {
+        <link rel="stylesheet" href="~/css/side-header.css" />
+        <link rel="stylesheet" href="~/css/discord-messages.css" />
+    }
+</head>
+@* <partial name="_LoginPartial" />
+@RenderBody() *@
 <body>
     @if (User.IsInRole("Member"))
     {
+        <!-- SIDE NAVIGATION -->
+        <div class="side-nav">
+            <div class="servers">
+                <a asp-controller="Discord" asp-action="Index">
+                    <img src="~/images/profile4.png" />
+                </a>
+                @foreach (var server in ViewBag.Servers)
+                {
+                    <a asp-controller="Discord" asp-action="Server" asp-route-id="@server.Id">
+                        <img src="@server.IconURL" alt="@server.Name" />
+                    </a>
+                }
+                <a asp-controller="Discord" asp-action="CreateNewServer">+</a>                    
+            </div>
 
-			<link rel="stylesheet" href="~/css/side-header.css" />
-        <link rel="stylesheet" href="~/css/discord-messages.css" />
-			<!-- SIDE NAVIGATION -->
-			<div class="side-nav">
-				<div class="servers">
-                    <a asp-controller="Discord" asp-action="Index"> <img src="~/images/profile4.png" /></a>
-                    @foreach (var server in ViewBag.Servers)
-                    {
-                        <a asp-controller="Discord" asp-action="Server" asp-route-id="@server.Id">
-                        <img src="@server.IconURL" alt="Alternate Text" />
-                        </a>
-                    }
-                    <a asp-controller="Discord" asp-action="CreateNewServer">+</a>                    
-                </div>
-                <div class="friends">
-                    <ul type="none">
+            <div class="friends">
+                <ul type="none">
                     @if (ViewBag.Server == null)
                     {
-                    <li><a asp-action="ManageFriends" asp-controller="Discord">Dodaj przyjaciela</a></li>
+                        <li><a asp-action="ManageFriends" asp-controller="Discord">Dodaj przyjaciela</a></li>
                         @foreach (var friend in ViewBag.Friends)
                         {
-                            <li class="friend-on-list"><img class="avatar" src="@friend.AvatarURL"/>@friend.Username</li>
+                            <li class="friend-on-list">
+                                <img class="avatar" src="@friend.AvatarURL" /> @friend.Username
+                            </li>
                         }
-                        
                     }
                     else
                     {
                         <li>@ViewBag.Server.Name</li>
                         @foreach (var channel in ViewBag.Chanels)
                         {
-                            <li class="friend-on-list">
-                                @channel.Name
-                            </li>
+                            <li class="friend-on-list">@channel.Name</li>
                         }
-                        <li><a asp-route-id="@ViewBag.Server.Id" asp-action="AddChanel">dodaj kanal +</a></li>
-                        
+                        <li>
+                            <a asp-route-id="@ViewBag.Server.Id" asp-action="AddChanel">Dodaj kanał +</a>
+                        </li>
                     }
                     <li><partial name="_LoginPartial" /></li>
-				    </ul>
-                </div>
-                <div class="profile">
-                <img class="avatar" src="~/images/me.jpg" /> <h3>My Profile</h3>
-                </div>
-                <div class="continue-border"></div>
-			</div>
-
-        
-
-    }
-    else
-    {
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">DiscordClone</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+                </ul>
             </div>
-        </nav>
-    </header>
-    <div class="container">
+
+            <div class="profile">
+                <img class="avatar" src="~/images/me.jpg" /> <h3>My Profile</h3>
+            </div>
+            <div class="continue-border"></div>
+        </div>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
-    @if(!User.IsInRole("Member"))
-	{
-		<footer class="border-top footer text-muted">
-			<div class="text-center">
-				&copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-			</div>
-		</footer>
-	}
-   
-    
-    
-    
+    }
+    else
+    {
+        <!-- HEADER DLA NIE-MEMBERÓW -->
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">DiscordClone</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        </ul>
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="border-top footer text-muted">
+            <div class="text-center">
+                &copy; 2025 - DiscordClone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+    }
+
+    <!-- SKRYPTY -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-</body>
+</body> 
 </html>
