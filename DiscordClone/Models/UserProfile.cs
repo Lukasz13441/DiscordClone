@@ -17,7 +17,6 @@ namespace DiscordClone.Models
         // Navigation
 
         public virtual ApplicationUser User { get; set; }
-
         public virtual ICollection<Server> Server { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Friendship> Friendships { get; set; }

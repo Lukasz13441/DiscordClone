@@ -31,16 +31,20 @@ namespace DiscordClone.Services
 
         public List<UserProfile> GetUserFriends(string userId)
         {
-            var UserId = GetUserIntId(userId);
-            if (UserId == null) return null;
+            var id = GetUserIntId(userId);
+            if (id == null) return new List<UserProfile>();
 
-            return _context.Friendships
-                .Where(f => f.UserId == UserId || f.FriendId == UserId && f.Status == Status.Accepted)
+            var friends = _context.Friendships
+                .Where(f => (f.UserId == id || f.FriendId == id) &&
+                           (f.Status == Status.Accepted || f.Status == Status.Chating))
+                .Select(f => f.UserId == id ? f.FriendId : f.UserId) 
                 .Join(_context.UserProfiles,
-                      f => f.FriendId,
+                      friendId => friendId,
                       u => u.Id,
-                      (f, u) => u)
+                      (friendId, profile) => profile)
                 .ToList();
+
+            return friends;
         }
 
         public List<UserProfile> GetPendingFriendRequests(string userId)
