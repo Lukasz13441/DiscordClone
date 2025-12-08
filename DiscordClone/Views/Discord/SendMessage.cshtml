@@ -1,5 +1,14 @@
 ﻿@model DiscordClone.Models.Message
+
+@foreach(var msg in ViewBag.Messages)
+{
+	<div>
+		<b>@msg.User.Username:</b> @msg.Value
+	</div>
+}
+
 <form asp-action="SendMessageForm">
-	<input type="text" name="name" asp-for="Value"/>
+	<input hidden type="number" asp-for="ChannelId" value="@ViewBag.Id" />
+	<input type="text"  asp-for="Value"/>
 	<button type="submit">ok</button>
 </form>

@@ -20,6 +20,11 @@ namespace DiscordClone.Services
             return new string[] { parts[0], parts[1] };
         }
 
+        public UserProfile GetUserProfile(string userId)
+        {
+            return _context.UserProfiles.FirstOrDefault(x => x.UserId == userId);
+        }
+
         // Pobieranie serwerów użytkownika
         public List<Server> GetUserServers(string userId)
         {
@@ -183,17 +188,28 @@ namespace DiscordClone.Services
 
         public void SendMessage(int channelId, int userId, string messageValue)
         {
-            var channel = _context.Channels.FirstOrDefault(c => c.Id == channelId);
-            var user = _context.UserProfiles.FirstOrDefault(u => u.Id == userId);
-            if (channel == null || user == null || string.IsNullOrEmpty(messageValue)) return;
+            //var channel = _context.Channels.FirstOrDefault(c => c.Id == channelId);
+            //var user = _context.UserProfiles.FirstOrDefault(u => u.Id == userId);
+            //if (channel == null || user == null || string.IsNullOrEmpty(messageValue)) return;
             _context.Messages.Add(new Message
             {
-                ChannelId = channel.Id,
-                UserId = user.Id,
+                ChannelId = channelId,
+                UserId = userId,
                 Value = messageValue,
                 CreatedAt = DateTime.Now
             });
             _context.SaveChanges();
+        }
+
+        public List<Message> GetMessages(int channelId)
+        {
+            var messages = _context.Messages
+                .Where(m => m.ChannelId == channelId)
+                .Include(m => m.User)
+                .OrderBy(m => m.CreatedAt)
+                .ToList();
+            if (messages == null) return new List<Message>();
+            return messages;
         }
 
     }

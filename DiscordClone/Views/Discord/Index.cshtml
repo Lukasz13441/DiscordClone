@@ -3,83 +3,31 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Discord Messages</title>
-    <link rel="stylesheet" href="~/css/discord-messages.css" />
+    <title>Discord – Chat</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/style-index-discord.css" asp-append-version="true"/>
+
+    <style>
+
+    </style>
 </head>
 
 <body>
     <div class="discord-layout">
 
         <!-- ===== LEFT: SERVERS LIST ===== -->
-        <div class="servers-bar">
-            <div class="server-icon home">DC</div>
-
-            <div class="server-icon">A</div>
-            <div class="server-icon">B</div>
-            <div class="server-icon">C</div>
-            <div ac class="server-icon">+</div>
-        </div>
-        
+      
+        <partial name="Servers" />
 
         <!-- ===== MIDDLE: CHANNEL LIST ===== -->
-        <div class="channels-bar">
-            <div class="channel-header">My Server</div>
 
-            <div class="channel-section">
-                <h4>Text Channels</h4>
-                <div class="channel selected"># general</div>
-                <div class="channel"># memes</div>
-                <div class="channel"># coding</div>
-            </div>
+      <partial name="FriendsList" />
 
-            <div class="channel-section">
-                <h4>Voice Channels</h4>
-                <div class="channel">🔊 Lounge</div>
-                <div class="channel">🔊 Gaming</div>
-            </div>
-
-            <div class="user-panel">
-                <div class="user-info">
-                    <img src="https://i.pravatar.cc/40" class="avatar" />
-                    <span>YourUser</span>
-                </div>
-                <i class="fa-solid fa-gear"></i>
-            </div>
-        </div>
 
         <!-- ===== RIGHT: CHAT AREA ===== -->
-        <div class="chat-area">
-
-            <div class="messages">
-                <div class="message">
-                    <img src="https://i.pravatar.cc/40?img=3" class="avatar">
-                    <div class="message-content">
-                        <span class="username">Alice</span>
-                        <span class="text">Hey, welcome to the server!</span>
-                    </div>
-                </div>
-
-                <div class="message">
-                    <img src="https://i.pravatar.cc/40?img=5" class="avatar">
-                    <div class="message-content">
-                        <span class="username">Bob</span>
-                        <span class="text">This layout looks cool 👀</span>
-                    </div>
-                </div>
-
-            <div class="message">
-                <img src="https://i.pravatar.cc/40?img=7" class="avatar">
-                <div class="message-content">
-                    <span class="username">Charlie</span>
-                    <span class="text">Now it’s just messages only!</span>
-                </div>
-            </div>
-            </div>
-
-            <div class="message-box">
-                <input type="text" placeholder="Message #general" />
-            </div>
-        </div>
+        
+        <partial name="IndexFriendsList" />
     </div>
 </body>
 </html>

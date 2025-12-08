@@ -1,0 +1,340 @@
+﻿body {
+    margin: 0;
+    background: #2f3136;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.discord-layout {
+    display: flex;
+    height: 100vh;
+}
+
+/* ================= SERVER BAR ================= */
+.servers-bar {
+    width: 70px;
+    background: #202225;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    gap: 10px;
+}
+
+.server-icon {
+    width: 48px;
+    height: 48px;
+    background: #36393f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .server-icon:hover {
+        background: #3ba55d;
+        transform: scale(1.07);
+    }
+
+    .server-icon.home {
+        background: #5865f2;
+    }
+
+
+/* ================= CHANNEL BAR ================= */
+.channels-bar {
+    width: 260px;
+    background: #2f3136;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border-right: 1px solid #1a1b1e;
+}
+
+.channel-header {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.channel-section h4 {
+    margin: 10px 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #a8aaad;
+}
+
+.channel {
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    .channel:hover {
+        background: #3c3e44;
+    }
+
+    .channel.selected {
+        background: #5865f2;
+        font-weight: bold;
+    }
+
+.user-panel {
+    margin-top: auto;
+    padding: 10px;
+    background: #292b2f;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+}
+
+
+/* ================== CHAT AREA ================== */
+.chat-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.message-content .username {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.text {
+    font-size: 14px;
+    opacity: .85;
+}
+
+.message-box {
+    padding: 10px;
+    border-radius: 5px;
+    background: #202225;
+    margin-top: 10px;
+}
+
+    .message-box input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        outline: none;
+        background: #3c3e44;
+        border-radius: 4px;
+        color: white;
+        font-size: 14px;
+    }
+
+        .message-box input::placeholder {
+            color: #b5b6b8;
+        }
+
+/* ===================== */
+/* Discord Friends Panel */
+/* ===================== */
+
+.discord-friends-panel {
+    width: 170vh;
+    background: #2b2d31;
+    color: #f2f3f5;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    border-right: 1px solid #1f2124;
+}
+
+/* Header */
+.friends-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+}
+
+/* Tabs */
+.friends-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.tab {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #b5bac1;
+    font-size: 14px;
+    transition: 0.15s;
+}
+
+.tab:hover {
+    background: rgba(255,255,255,0.05);
+    color: white;
+}
+
+.tab.active {
+    background: #404249;
+    color: #fff;
+}
+
+.tab.add-friend {
+    color: #23a55a;
+    font-weight: 600;
+}
+
+/* Search Bar */
+.friends-search input {
+    width: 100%;
+    padding: 7px;
+    background: #1e1f22;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+/* Friend List */
+.friend-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.friend-row {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+    transition: 0.15s;
+    cursor: pointer;
+}
+
+.friend-row:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.friend-info {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.friend-name {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.friend-status {
+    font-size: 12px;
+    color: #b5bac1;
+}
+
+/* Status Colors */
+.online { color: #57f287; }
+.idle { color: #fbbf24; }
+.dnd { color: #ed4245; }
+
+/* Action Icons */
+.friend-actions i {
+    margin-left: 10px;
+    font-size: 16px;
+    color: #b5bac1;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.friend-actions i:hover {
+    color: #fff;
+}
+
+/* ---------- Discord-Style Profile Bar ---------- */
+
+.discord-profile-bar {
+    height: 60px;
+    background: #292b2f; /* Discord bottom bar */
+    border-top: 1px solid #232427;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 220px; /* match FriendsList width */
+}
+
+.profile-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.profile-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.profile-tag {
+    font-size: 12px;
+    color: #b9bbbe;
+}
+
+.settings-icon {
+    margin-left: auto;
+    font-size: 20px;
+    color: #b9bbbe;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+    .settings-icon:hover {
+        color: #fff;
+    }
