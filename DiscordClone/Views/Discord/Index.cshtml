@@ -15,19 +15,23 @@
 
 <body>
     <div class="discord-layout">
-
         <!-- ===== LEFT: SERVERS LIST ===== -->
-      
         <partial name="Servers" />
-
-        <!-- ===== MIDDLE: CHANNEL LIST ===== -->
-
-      <partial name="FriendsList" />
-
-
-        <!-- ===== RIGHT: CHAT AREA ===== -->
         
-        <partial name="IndexFriendsList" />
+        @if(ViewBag.Server != null)
+        { 
+            <!-- ===== MIDDLE: CHANNEL LIST / FRIENDS ===== -->
+           <partial name="Channels" />
+           <partial name="SendMessage" />
+            
+        }
+        else
+        { 
+            <!-- ===== RIGHT: MAIN AREA ===== -->
+            <partial name="FriendsChats" />
+            <partial name="IndexFriendsList" />
+        }
+        
     </div>
 </body>
 </html>

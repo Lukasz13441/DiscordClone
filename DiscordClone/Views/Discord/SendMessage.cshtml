@@ -1,14 +1,46 @@
-﻿@model DiscordClone.Models.Message
-
+﻿<div id="messagesList">
 @foreach(var msg in ViewBag.Messages)
 {
-	<div>
-		<b>@msg.User.Username:</b> @msg.Value
-	</div>
+    <div><b>@msg.User.Username:</b> @msg.Value</div>
 }
+</div>
 
-<form asp-action="SendMessageForm">
-	<input hidden type="number" asp-for="ChannelId" value="@ViewBag.Id" />
-	<input type="text"  asp-for="Value"/>
-	<button type="submit">ok</button>
-</form>
+<div>
+    <input hidden id="channelId" value="@ViewBag.Id" />
+    <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
+    <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
+
+    <input type="text" id="messageInput" placeholder="Wiadomość" />
+    <button id="sendBtn">Wyślij</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    connection.on("ReceiveMessage", (username, message) => {
+        const div = document.createElement("div");
+        div.innerHTML = `<b>${username}:</b> ${message}`;
+        document.getElementById("messagesList").appendChild(div);
+    });
+
+    // Startujemy połączenie
+    connection.start().catch(err => console.error(err.toString()));
+
+    // Obsługa przycisku
+    document.getElementById("sendBtn").addEventListener("click", function () {
+        const channelId = parseInt(document.getElementById("channelId").value);
+        const userId = parseInt(document.getElementById("UserProfileId").value);
+        const message = document.getElementById("messageInput").value;
+
+        if (!message) return;
+
+        connection.invoke("SendMessage", channelId, userId, message)
+            .catch(err => console.error(err.toString()));
+
+        document.getElementById("messageInput").value = "";
+    });
+</script>

@@ -10,13 +10,21 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddScoped<DiscordService>();
+
+builder.Services.AddScoped<ChannelService>();
+
+builder.Services.AddScoped<FriendsService>();
+
+builder.Services.AddScoped<ServerService>();
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-    var app = builder.Build();
+builder.Services.AddSignalR();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseRouting();
 
     app.UseAuthorization();
+
+    app.MapHub<ChatHub>("/chatHub");
 
     app.MapControllerRoute(
         name: "default",

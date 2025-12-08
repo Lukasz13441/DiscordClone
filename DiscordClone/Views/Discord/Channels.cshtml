@@ -1,0 +1,24 @@
+﻿ <aside class="text-light p-3" style="width:250px; background:#202225;">
+        <ul class="list-unstyled">
+        <h5 class="mb-3 fw-bold">@ViewBag.Server.Name</h5>
+        
+                @foreach (var channel in ViewBag.Chanels)
+                {
+                    <li class="p-2 mb-1 rounded bg-secondary"> 
+                        <a asp-route-id="@channel.Id" asp-action="SendMessage" class="btn btn-sm btn-success w-100">
+                            @channel.Name
+                        </a>
+                        </li>
+                }
+
+                <li class="mt-2">
+                    <a asp-route-id="@ViewBag.Server.Id" asp-action="AddChanel" class="btn btn-sm btn-success w-100">
+                        Dodaj kanał +
+                    </a>
+                </li>
+                <li class="mt-4">
+                <partial name="_LoginPartial" />
+            </li>
+        </ul>
+	<partial name="mini-profile" />
+    </aside>

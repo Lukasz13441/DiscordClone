@@ -12,15 +12,6 @@
 
 <div class="container-fluid vh-100 d-flex p-0">
 
-    <!-- LEWY PASEK -->
-    
-    <partial name="Servers" />
-
-    <!-- GŁÓWNY PANEL -->
-    <partial name="FriendsList" />
-
-            
-
             <!-- == Sekcja zaproszeń == -->
        <div class="container-fluid">
             <div>
@@ -56,7 +47,7 @@
                     <div class="card-body">
                         <h2 class="card-title mb-3">Add Friend</h2>
 
-                        <form asp-action="AddFriend" asp-controller="Discord" class="input-group mb-3">
+                        <form asp-action="AddFriendForm" asp-controller="Discord" class="input-group mb-3">
                             <input asp-for="Name" type="text" class="form-control" placeholder="username#1234" />
                             <button type="submit" class="btn btn-primary">Send</button>
                         </form>

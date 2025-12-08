@@ -1,46 +1,45 @@
-﻿<aside class="text-light p-3" style="width:250px; background:#202225;">
-        <ul class="list-unstyled">
+﻿ <!-- Friend Row -->
+        <li class="friend-row">
+            <img src="https://i.pravatar.cc/40?img=7" class="avatar">
 
-            @if (ViewBag.Server == null)
-            {
-                <li class="mb-2">
-                    <a asp-action="ManageFriends" asp-controller="Discord" class="btn btn-sm btn-primary w-100">
-                        Dodaj przyjaciela
-                    </a>
-                </li>
+            <div class="friend-info">
+                <div class="friend-name">Alice</div>
+                <div class="friend-status online">Online</div>
+            </div>
 
-                @foreach (var friend in ViewBag.Friends)
-                {
-                    <li class="d-flex align-items-center mb-2">
-                        <img src="@friend.AvatarURL" class="rounded-circle me-2" width="32" height="32" />
-                        @friend.Username
-                    </li>
-                }
-            }
-            else
-            {
-                <h5 class="mb-3 fw-bold">@ViewBag.Server.Name</h5>
+            <div class="friend-actions">
+                <i class="fa-solid fa-message"></i>
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+        </li>
 
-                @foreach (var channel in ViewBag.Chanels)
-                {
-                    <li class="p-2 mb-1 rounded bg-secondary"> 
-                        <a asp-route-id="@channel.Id" asp-action="SendMessage" class="btn btn-sm btn-success w-100">
-                            @channel.Name
-                        </a>
-                        </li>
-                }
+        <li class="friend-row">
+            <img src="https://i.pravatar.cc/40?img=5" class="avatar">
 
-                <li class="mt-2">
-                    <a asp-route-id="@ViewBag.Server.Id" asp-action="AddChanel" class="btn btn-sm btn-success w-100">
-                        Dodaj kanał +
-                    </a>
-                </li>
-            }
+            <div class="friend-info">
+                <div class="friend-name">Bob</div>
+                <div class="friend-status idle">Idle</div>
+            </div>
 
-            <li class="mt-4">
-                <partial name="_LoginPartial" />
-            </li>
-        </ul>
-	<partial name="mini-profile" />
+            <div class="friend-actions">
+                <i class="fa-solid fa-message"></i>
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+        </li>
 
-</aside>
+        <li class="friend-row">
+            <img src="https://i.pravatar.cc/40?img=9" class="avatar">
+
+            <div class="friend-info">
+                <div class="friend-name">Charlie</div>
+                <div class="friend-status dnd">Do Not Disturb</div>
+            </div>
+
+            <div class="friend-actions">
+                <i class="fa-solid fa-message"></i>
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+        </li>
