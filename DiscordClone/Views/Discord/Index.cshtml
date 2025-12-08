@@ -6,95 +6,10 @@
     <title>Discord – Chat</title>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/style-index-discord.css" asp-append-version="true"/>
 
     <style>
-        body {
-            margin: 0; background:#2f3136; color:#fff;
-            font-family: Arial, Helvetica, sans-serif;
-        }
 
-        .discord-layout {
-            display:flex; height:100vh;
-        }
-
-        /* ================= SERVER BAR ================= */
-        .servers-bar {
-            width:70px; background:#202225;
-            display:flex; flex-direction:column;
-            align-items:center; padding-top:10px; gap:10px;
-        }
-        .server-icon {
-            width:48px; height:48px; background:#36393f;
-            border-radius:50%; display:flex; align-items:center; justify-content:center;
-            font-size:17px; font-weight:bold; cursor:pointer;
-            transition:.2s;
-        }
-        .server-icon:hover { background:#3ba55d; transform:scale(1.07); }
-
-        .server-icon.home { background:#5865f2; }
-
-
-        /* ================= CHANNEL BAR ================= */
-        .channels-bar {
-            width:260px; background:#2f3136;
-            display:flex; flex-direction:column;
-            padding:15px; border-right:1px solid #1a1b1e;
-        }
-
-        .channel-header {
-            font-weight:bold; font-size:18px; margin-bottom:15px;
-        }
-
-        .channel-section h4 {
-            margin:10px 0 8px; font-size:13px; text-transform:uppercase;
-            color:#a8aaad;
-        }
-
-        .channel {
-            padding:6px 10px; border-radius:5px;
-            cursor:pointer; font-size:14px;
-        }
-        .channel:hover { background:#3c3e44; }
-        .channel.selected { background:#5865f2; font-weight:bold; }
-
-        .user-panel {
-            margin-top:auto; padding:10px; background:#292b2f;
-            display:flex; align-items:center; justify-content:space-between;
-            border-radius:5px;
-        }
-        .user-info { display:flex; align-items:center; gap:10px; }
-        .avatar { border-radius:50%; width:34px; height:34px; }
-
-
-        /* ================== CHAT AREA ================== */
-        .chat-area {
-            flex-grow:1; display:flex; flex-direction:column;
-            padding:15px;
-        }
-
-        .messages {
-            flex-grow:1; overflow-y:auto; padding-right:10px;
-            display:flex; flex-direction:column; gap:15px;
-        }
-        .message {
-            display:flex; gap:10px; align-items:flex-start;
-        }
-        .message-content .username {
-            font-weight:bold; display:block; margin-bottom:2px;
-        }
-        .text { font-size:14px; opacity:.85; }
-
-        .message-box {
-            padding:10px; border-radius:5px;
-            background:#202225; margin-top:10px;
-        }
-        .message-box input {
-            width:100%; padding:12px;
-            border:none; outline:none;
-            background:#3c3e44; border-radius:4px;
-            color:white; font-size:14px;
-        }
-        .message-box input::placeholder { color:#b5b6b8; }
     </style>
 </head>
 
@@ -111,41 +26,8 @@
 
 
         <!-- ===== RIGHT: CHAT AREA ===== -->
-        <div class="chat-area">
-
-            <div class="messages">
-
-                <div class="message">
-                    <img src="https://i.pravatar.cc/40?img=3" class="avatar">
-                    <div class="message-content">
-                        <span class="username">Alice</span>
-                        <span class="text">Hey, welcome to the server!</span>
-                    </div>
-                </div>
-
-                <div class="message">
-                    <img src="https://i.pravatar.cc/40?img=5" class="avatar">
-                    <div class="message-content">
-                        <span class="username">Bob</span>
-                        <span class="text">This layout looks cool 👀</span>
-                    </div>
-                </div>
-
-                <div class="message">
-                    <img src="https://i.pravatar.cc/40?img=7" class="avatar">
-                    <div class="message-content">
-                        <span class="username">Charlie</span>
-                        <span class="text">Now it’s just messages only!</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="message-box">
-                <input type="text" placeholder="Message #general">
-            </div>
-
-        </div>
+        
+        <partial name="IndexFriendsList" />
     </div>
 </body>
 </html>
