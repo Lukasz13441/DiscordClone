@@ -81,6 +81,7 @@ namespace DiscordClone.Controllers
             ViewBag.Servers = _service.GetUserServers(userId);
             ViewBag.Chanels = _service.GetChanels(Id);
             ViewBag.Server = _service.GetServerById(Id);
+            
             return View("Index");
         }
         public IActionResult AddChanel(int Id)
@@ -100,17 +101,26 @@ namespace DiscordClone.Controllers
             return RedirectToAction("Server",new { Id = model.ServerId}); 
         }
 
-        public IActionResult SendMessage()
+        public IActionResult SendMessage(int Id)
         {
+            var userId = GetUserId();
+            ViewBag.Id = Id;
+            ViewBag.Messages = _service.GetMessages(Id);
+            ViewBag.Servers = _service.GetUserServers(userId);
+            ViewBag.Friends = _service.GetUserFriends(userId);
             return View();
         }
 
         [HttpPost]
-        public IActionResult SendMessageForm(int ChannelId, int UserId, string MessageValue)
+        public IActionResult SendMessageForm(Message model)
         {
-            _service.SendMessage(ChannelId, UserId, MessageValue);
-            return RedirectToAction("Server");
+            var userId = _service.GetUserProfile(GetUserId());
+            _service.SendMessage(model.ChannelId, userId.Id, model.Value);
+            return RedirectToAction("SendMessage", new { Id = model.ChannelId });
         }
+
+        
+
 
     }
 }

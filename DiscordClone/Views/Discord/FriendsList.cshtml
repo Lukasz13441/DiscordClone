@@ -23,7 +23,11 @@
 
                 @foreach (var channel in ViewBag.Chanels)
                 {
-                    <li class="p-2 mb-1 rounded bg-secondary">@channel.Name</li>
+                    <li class="p-2 mb-1 rounded bg-secondary"> 
+                        <a asp-route-id="@channel.Id" asp-action="SendMessage" class="btn btn-sm btn-success w-100">
+                            @channel.Name
+                        </a>
+                        </li>
                 }
 
                 <li class="mt-2">
