@@ -22,8 +22,12 @@
         { 
             <!-- ===== MIDDLE: CHANNEL LIST / FRIENDS ===== -->
            <partial name="Channels" />
-           <partial name="SendMessage" />
-            
+            <partial name="SendMessage" />
+
+        }else if (ViewBag.Messages != null)
+        {
+            <partial name="FriendsChats" />
+            <partial name="SendMessage" />
         }
         else
         { 

@@ -1,5 +1,6 @@
 ﻿using DiscordClone.Data;
 using DiscordClone.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscordClone.Services
 {
@@ -34,7 +35,7 @@ namespace DiscordClone.Services
             if (UserId == null) return null;
 
             return _context.Friendships
-                .Where(f => f.UserId == UserId && f.Status == Status.Accepted)
+                .Where(f => f.UserId == UserId || f.FriendId == UserId && f.Status == Status.Accepted)
                 .Join(_context.UserProfiles,
                       f => f.FriendId,
                       u => u.Id,
@@ -91,21 +92,63 @@ namespace DiscordClone.Services
             if (userProfile == null) return;
 
             var friendship = _context.Friendships.FirstOrDefault(f =>
-                f.FriendId == userProfile.Id && f.UserId == friendId);
+                f.FriendId == userProfile.Id  && f.UserId == friendId);
 
             if (friendship != null)
             {
                 friendship.Status = Status.Accepted;
-
-                _context.Friendships.Add(new Friendship
-                {
-                    UserId = userProfile.Id,
-                    FriendId = friendId,
-                    Status = Status.Accepted
-                });
-
                 _context.SaveChanges();
+
+                //_context.Friendships.Add(new Friendship
+                //{
+                //    UserId = userProfile.Id,
+                //    FriendId = friendId,
+                //    Status = Status.Accepted
+                //});
+
+
             }
+        }
+
+        public void CreateFriendshipChannel(int UserId , int FriendId)
+        {
+            if (ifChating(UserId, FriendId)) return;
+            _context.Friendships.Add(
+                new Friendship
+                {
+                    UserId = UserId,
+                    FriendId = FriendId,
+                    Status = Status.Chating
+                });
+            _context.SaveChanges();
+        }
+
+        public Boolean ifChating(int UserId, int FriendId)
+        {
+             var Chating = _context.Friendships
+                .FirstOrDefault(f => f.UserId == UserId && f.FriendId == FriendId && f.Status == Status.Chating || f.Status == Status.Accepted);
+            if (Chating == null)
+            {
+                Chating = _context.Friendships
+                .FirstOrDefault(f => f.UserId == FriendId  && f.FriendId == UserId && f.Status == Status.Chating || f.Status == Status.Accepted);
+            }
+            if (Chating != null)
+                return true;
+            return false;
+        }
+
+        public int GetFriendshipId(int UserId, int FriendId)
+        {
+            var friendship = _context.Friendships
+                .FirstOrDefault(f => f.UserId == UserId && f.FriendId == FriendId && f.Status == Status.Chating || f.Status == Status.Accepted);
+            if (friendship == null)
+                friendship = _context.Friendships
+                .FirstOrDefault(f => f.UserId == FriendId && f.FriendId == UserId && f.Status == Status.Chating || f.Status == Status.Accepted);
+            if (friendship != null)
+            {
+                return friendship.Id;
+            }
+            return -1;
         }
     }
 }

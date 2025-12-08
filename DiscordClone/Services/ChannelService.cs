@@ -37,8 +37,15 @@ namespace DiscordClone.Services
             var channels = _context.Channels
                 .Where(f => f.ServerId == ServerId)
                 .ToList();
-            if (channels == null) return null;
-
+            if (channels == null) {
+                channels = _context.Channels
+                    .Where(f => f.FriendShipId == ServerId)
+                    .ToList();
+            }
+            if (channels == null)
+            {
+                return null;
+            }
             return channels;
         }
 
@@ -112,6 +119,28 @@ namespace DiscordClone.Services
                                    .FirstOrDefault();
 
             return _context.Servers.Find(serverId);
+        }
+
+        public void CreateFriendshipChannel(int FriendshipId)
+        {
+            if (_context.Channels.Any(c => c.FriendShipId == FriendshipId))
+            {
+                return; 
+            }
+            _context.Channels.Add(new Channel
+            {
+                Name = "Chat",
+                FriendShipId = FriendshipId
+            });
+            _context.SaveChanges();
+        }
+
+        public int GetFriendshipChannelId(int FriendshipId)
+        {
+            var channel = _context.Channels
+                .FirstOrDefault(c => c.FriendShipId == FriendshipId);
+            if (channel == null) return 0;
+            return channel.Id;
         }
     }
 }

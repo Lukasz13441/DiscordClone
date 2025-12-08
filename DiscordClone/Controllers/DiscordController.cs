@@ -81,9 +81,9 @@ namespace DiscordClone.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Accept(int FriendId)
+        public IActionResult AcceptFriendship(int Id)
         {
-            _FriendsService.AcceptFriendship(GetUserId(), FriendId);
+            _FriendsService.AcceptFriendship(GetUserId(), Id);
             return RedirectToAction("Index");
         }
 
@@ -114,6 +114,33 @@ namespace DiscordClone.Controllers
             ViewBag.Messages = _ChannelService.GetChannelMessages(Id);
 
 
+            return View("Index");
+        }
+
+        public IActionResult ChatWithId(int Id)
+        {
+            var FriendId = Id;
+            var userId = GetUserId();
+            //tworzymy relacjie jesli nie istnieje
+            if (!_FriendsService.ifChating(_FriendsService.GetUserIntId(GetUserId()), FriendId))
+            {
+                _FriendsService.CreateFriendshipChannel(_FriendsService.GetUserIntId(GetUserId()), FriendId);
+            }
+            //pobieramy servery i przyjaciol
+            ViewBag.Servers = _ServerService.GetUserServers(userId);
+            ViewBag.Friends = _FriendsService.GetUserFriends(userId);
+            ViewBag.UserProfile = _FriendsService.GetUserProfile(userId);
+
+            //pobiramy id relacji
+            var FriendshipId = _FriendsService.GetFriendshipId(_FriendsService.GetUserIntId(GetUserId()), FriendId);
+            //tworzymy kanal jesli nie istnieje
+            _ChannelService.CreateFriendshipChannel(FriendshipId);
+            //pobieramy id kanalu
+            var FriendshipChannelId = _ChannelService.GetFriendshipChannelId(FriendshipId);
+            ViewBag.Id = FriendshipChannelId;
+            
+            //pobieramy wiadomosci
+            ViewBag.Messages = _ChannelService.GetChannelMessages(FriendshipChannelId);
             return View("Index");
         }
 

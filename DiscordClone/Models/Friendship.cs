@@ -22,7 +22,8 @@ namespace DiscordClone.Models
     {
         Pending,
         Accepted,
-        Blocked
+        Blocked,
+        Chating
     }
 
 }
