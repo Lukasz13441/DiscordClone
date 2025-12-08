@@ -1,0 +1,141 @@
+﻿/* ================================
+   Discord Color Palette
+   ================================ */
+:root {
+    --discord-darkest: #1e1f22;
+    --discord-dark: #2b2d31;
+    --discord-medium: #313338;
+    --discord-light: #383a40;
+    --discord-text: #f2f3f5;
+    --discord-muted: #b5bac1;
+    --discord-blurple: #5865f2;
+    --discord-green: #3ba55d;
+    --discord-red: #ed4245;
+}
+
+/* ================================
+   GENERAL LAYOUT
+   ================================ */
+
+body {
+    background: var(--discord-darkest) !important;
+    color: var(--discord-text) !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.container-fluid {
+    display: flex;
+    gap: 20px;
+    padding: 30px;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+    /* Two cards side-by-side */
+    .container-fluid > div {
+        flex: 1;
+        display: flex;
+    }
+
+/* ================================
+   CARD STYLE
+   ================================ */
+.card {
+    width: 100%;
+    background: var(--discord-dark) !important;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    color: var(--discord-text);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* ================================
+   LIST STYLES
+   ================================ */
+.list-group-item {
+    background: var(--discord-medium) !important;
+    color: var(--discord-text);
+    border: none;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+    .list-group-item:hover {
+        background: var(--discord-light) !important;
+    }
+
+/* Username + Tag muted */
+.text-white-50 {
+    color: var(--discord-muted) !important;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+.btn-success {
+    background: var(--discord-green) !important;
+    border: none;
+}
+
+.btn-outline-light {
+    border-color: var(--discord-muted) !important;
+    color: var(--discord-muted) !important;
+}
+
+    .btn-outline-light:hover {
+        background: var(--discord-light) !important;
+        color: var(--discord-text) !important;
+    }
+
+.btn-primary {
+    background: var(--discord-blurple) !important;
+    border: none;
+}
+
+    .btn-primary:hover {
+        filter: brightness(1.1);
+    }
+
+/* ================================
+   INPUT FIELD (Add Friend)
+   ================================ */
+.form-control {
+    background: var(--discord-medium) !important;
+    border: 1px solid var(--discord-light) !important;
+    color: var(--discord-text) !important;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+    .form-control:focus {
+        outline: none !important;
+        border-color: var(--discord-blurple) !important;
+        box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.4);
+    }
+
+/* Input group spacing fix */
+.input-group .form-control {
+    border-right: none !important;
+}
+
+.input-group .btn {
+    border-radius: 0 6px 6px 0;
+}
+
+/* ================================
+   CARD SHADOWS
+   ================================ */
+.shadow {
+    box-shadow: 0 2px 12px #00000040 !important;
+}

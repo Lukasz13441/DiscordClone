@@ -1,18 +1,35 @@
-﻿<div id="messagesList">
-@foreach(var msg in ViewBag.Messages)
-{
-    <div><b>@msg.User.Username:</b> @msg.Value</div>
-}
+﻿<div class="chat-container">
+
+    <div id="messagesList" class="messages-area">
+        @foreach (var msg in ViewBag.Messages)
+        {
+            <div class="message-row">
+                <img src="@msg.User.AvatarURL" class="avatar" />
+
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="username">@msg.User.Username</span>
+                        <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
+                    </div>
+
+                    <div class="message-text">@msg.Value</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="chat-input-area">
+        <input hidden id="channelId" value="@ViewBag.Id" />
+        <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
+        <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
+
+        <input type="text" id="messageInput" class="chat-input" placeholder="Wiadomość" />
+        <button id="sendBtn" class="chat-send-btn">Wyślij</button>
+    </div>
+
 </div>
 
-<div>
-    <input hidden id="channelId" value="@ViewBag.Id" />
-    <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
-    <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
 
-    <input type="text" id="messageInput" placeholder="Wiadomość" />
-    <button id="sendBtn">Wyślij</button>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
