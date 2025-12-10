@@ -296,6 +296,15 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 18px;
+    max-width: 940px;
+}
+
+.message-row:hover {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 18px;
+    background-color: #FFFFFF20;
+    border-radius: 10px;
 }
 
 .avatar {
@@ -386,6 +395,99 @@
     overflow-y: auto;
     flex-grow: 1; /* expand to full width */
     width: auto; /* allow flexbox to fill remaining space */
+}
+
+/* ======= REACT BUTTON SHOW ON HOVER ======= */
+
+.message-row {
+    position: relative;
+}
+
+.add-reaction-btn {
+    position: absolute;
+    right: 65px;
+    top: 0px;
+    opacity: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 14px;
+    transition: .15s;
+}
+
+.message-row:hover .add-reaction-btn {
+    opacity: 1;
+}
+
+/* ======= PICKER ======= */
+
+.reaction-picker {
+    position: absolute;
+    top: 35px;
+    right: -10px;
+    background: #2b2d31;
+    padding: 6px 8px;
+    border-radius: 6px;
+    display: none;
+    gap: 6px;
+    box-shadow: 0 0 10px #00000066;
+}
+
+.reaction-option {
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+    .reaction-option:hover {
+        transform: scale(1.3);
+    }
+
+/* ======= REACTIONS UNDER MESSAGE ======= */
+
+.message-reactions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.reaction-bubble {
+    background: #3a3c43;
+    padding: 3px 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+}
+
+/* Pojawiające się akcje */
+.message-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: 0.2s;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    flex-direction: row;
+}
+
+.action-button {
+    cursor: pointer;
+    font-size: 16px;
+    color: #b5bac1;
+    transition: 0.15s;
+}
+
+    .action-button:hover {
+        transform: scale(1.2);
+        color: white;
+    }
+
+/* Pokazywanie akcji po najechaniu */
+.message-row:hover .message-actions {
+    opacity: 1;
 }
 
 

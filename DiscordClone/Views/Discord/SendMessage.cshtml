@@ -3,20 +3,47 @@
     <div id="messagesList" class="messages-area">
         @foreach (var msg in ViewBag.Messages)
         {
-            <div class="message-row">
+            <div class="message-row" data-message-id="@msg.Id">
+
                 <img src="@msg.User.AvatarURL" class="avatar" />
 
                 <div class="message-content">
+
                     <div class="message-header">
                         <span class="username">@msg.User.Username</span>
                         <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
                     </div>
 
                     <div class="message-text">@msg.Value</div>
+
+                    <!-- miejsce na reakcje -->
+                    <div class="message-reactions"></div>
+
+                    <!-- ikona dodawania reakcji -->
+                    <div class="add-reaction-btn">➕</div>
+
+                    <!-- dodatkowe akcje -->
+                    <div class="message-actions">
+                        <span class="action-button edit-message-btn">✏️</span>
+                        <span class="action-button delete-message-btn">🗑️</span>
+                    </div>
+
+                    <!-- popup z reakcjami -->
+                    <div class="reaction-picker">
+                        <span class="reaction-option">👍</span>
+                        <span class="reaction-option">❤️</span>
+                        <span class="reaction-option">😂</span>
+                        <span class="reaction-option">🔥</span>
+                        <span class="reaction-option">😎</span>
+                    </div>
+
+
+
                 </div>
             </div>
         }
     </div>
+
 
     <div class="chat-input-area">
         <input hidden id="channelId" value="@ViewBag.Id" />
@@ -33,31 +60,152 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
-    
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .build();
+    /* =====================================
+       SYSTEM REAKCJI + EDYCJA + USUWANIE
+       ===================================== */
 
-    connection.on("ReceiveMessage", (username, message) => {
-        const div = document.createElement("div");
-        div.innerHTML = `<b>${username}:</b> ${message}`;
-        document.getElementById("messagesList").appendChild(div);
+    let openPicker = null;
+
+    /* =====================================
+       GLOBAL CLICK HANDLER
+       ===================================== */
+    document.addEventListener("click", function (e) {
+
+        /* ============================
+           OTWIERANIE/ZAMYKANIE PICKERA
+           ============================ */
+        if (e.target.classList.contains("add-reaction-btn")) {
+            e.stopPropagation();
+
+            const picker = e.target.parentElement.querySelector(".reaction-picker");
+
+            // toggle
+            if (openPicker && openPicker !== picker) {
+                openPicker.style.display = "none";
+            }
+
+            picker.style.display = picker.style.display === "flex" ? "none" : "flex";
+            openPicker = picker.style.display === "flex" ? picker : null;
+            return;
+        }
+
+        /* ============================
+           KLIK W EMOJI
+           ============================ */
+        if (e.target.classList.contains("reaction-option")) {
+            const emoji = e.target.textContent;
+            const picker = e.target.closest(".reaction-picker");
+            const msgRow = e.target.closest(".message-row");
+            const reactionsBox = msgRow.querySelector(".message-reactions");
+
+            let existing = reactionsBox.querySelector(`[data-emoji="${emoji}"]`);
+
+            if (existing) {
+                const countSpan = existing.querySelector(".reaction-count");
+                countSpan.textContent = parseInt(countSpan.textContent) + 1;
+            }
+            else {
+                const reaction = document.createElement("div");
+                reaction.classList.add("reaction-item");
+                reaction.setAttribute("data-emoji", emoji);
+                reaction.innerHTML = `
+                    <span class="reaction-emoji">${emoji}</span>
+                    <span class="reaction-count">1</span>
+                `;
+                reactionsBox.appendChild(reaction);
+            }
+
+            picker.style.display = "none";
+            openPicker = null;
+            return;
+        }
+
+        /* ============================
+           USUWANIE WIADOMOŚCI
+           ============================ */
+        if (e.target.classList.contains("delete-message-btn")) {
+            const msg = e.target.closest(".message-row");
+            msg.remove();
+            return;
+        }
+
+        /* ============================
+           EDYCJA WIADOMOŚCI
+           ============================ */
+        if (e.target.classList.contains("edit-message-btn")) {
+            const msg = e.target.closest(".message-row");
+            const textDiv = msg.querySelector(".message-text");
+
+            if (msg.querySelector(".edit-input")) return;
+
+            const oldText = textDiv.textContent;
+            textDiv.style.display = "none";
+
+            const input = document.createElement("input");
+            input.classList.add("edit-input");
+            input.value = oldText;
+            input.style.width = "100%";
+
+            const saveBtn = document.createElement("button");
+            saveBtn.textContent = "Zapisz";
+            saveBtn.classList.add("btn", "btn-sm", "btn-primary", "mt-1");
+
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Anuluj";
+            cancelBtn.classList.add("btn", "btn-sm", "btn-secondary", "mt-1", "ms-2");
+
+            textDiv.insertAdjacentElement("afterend", input);
+            input.insertAdjacentElement("afterend", saveBtn);
+            saveBtn.insertAdjacentElement("afterend", cancelBtn);
+
+            saveBtn.addEventListener("click", () => {
+                textDiv.textContent = input.value;
+                textDiv.style.display = "block";
+                input.remove();
+                saveBtn.remove();
+                cancelBtn.remove();
+            });
+
+            cancelBtn.addEventListener("click", () => {
+                textDiv.style.display = "block";
+                input.remove();
+                saveBtn.remove();
+                cancelBtn.remove();
+            });
+
+            return;
+        }
+
+        /* ============================
+           KLIK POZA — ZAMYKA PICKERY
+           ============================ */
+        if (!e.target.closest(".message-row")) {
+            if (openPicker) {
+                openPicker.style.display = "none";
+                openPicker = null;
+            }
+        }
     });
 
-    // Startujemy połączenie
-    connection.start().catch(err => console.error(err.toString()));
+    /* =====================================
+       HOVER – animowane przyciski (ale bez zamykania pickera)
+       ===================================== */
+    document.addEventListener("mouseover", function (e) {
+        const row = e.target.closest(".message-row");
+        if (!row) return;
 
-    // Obsługa przycisku
-    document.getElementById("sendBtn").addEventListener("click", function () {
-        const channelId = parseInt(document.getElementById("channelId").value);
-        const userId = parseInt(document.getElementById("UserProfileId").value);
-        const message = document.getElementById("messageInput").value;
+        row.querySelector(".add-reaction-btn").style.opacity = "1";
+        row.querySelector(".message-actions").style.opacity = "1";
+    });
 
-        if (!message) return;
+    document.addEventListener("mouseout", function (e) {
+        const row = e.target.closest(".message-row");
+        if (!row) return;
 
-        connection.invoke("SendMessage", channelId, userId, message)
-            .catch(err => console.error(err.toString()));
+        row.querySelector(".add-reaction-btn").style.opacity = "0";
+        row.querySelector(".message-actions").style.opacity = "0";
 
-        document.getElementById("messageInput").value = "";
+        // ❗ DO NOT HIDE PICKER HERE (this was the bug!)
     });
 </script>
+
