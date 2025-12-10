@@ -19,6 +19,7 @@ namespace DiscordClone.Data
         public DbSet<ServerMember> ServerMembers { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<VoiceChannel> VoiceChannels { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
