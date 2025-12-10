@@ -15,16 +15,12 @@ namespace DiscordClone.Services
             _context = context;
         }
 
-        public void CreateDefaultChannel(int UserId)
+        public void CreateDefaultChannel(int ServerId)
         {
-            var Server = _context.Servers
-                .Where(x => x.OwnerId == UserId)
-                .OrderBy(x => x.CreatedAt)
-                .FirstOrDefault();
 
             Channel defaultChannel = new Channel
             {
-                ServerId = Server.Id,
+                ServerId = ServerId,
                 Name = "general"
             };
 

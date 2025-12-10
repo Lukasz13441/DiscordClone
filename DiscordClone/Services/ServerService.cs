@@ -41,7 +41,11 @@ namespace DiscordClone.Services
             });
             
             _context.SaveChanges();
-            _ChannelService.CreateDefaultChannel(UserId);
+            var Server = _context.Servers
+                .OrderByDescending(s => s.CreatedAt)
+                .FirstOrDefault();
+
+            _ChannelService.CreateDefaultChannel(Server.Id);
         }
 
         public Server GetServerById(int ServerId)
