@@ -36,6 +36,11 @@ namespace DiscordClone.Controllers
             ViewBag.Friends = _FriendsService.GetUserFriends(userId);
             return View();
         }     
+
+        public IActionResult ManageServers()
+        {
+            return View();
+        }
         
         public IActionResult Server(int Id)
         {
@@ -54,6 +59,11 @@ namespace DiscordClone.Controllers
         }
 
         public IActionResult CreateNewServer()
+        {
+            return View();
+        }
+
+        public IActionResult UserProfile()
         {
             return View();
         }

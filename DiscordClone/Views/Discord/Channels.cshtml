@@ -1,6 +1,6 @@
 ﻿<aside class="channel-sidebar">
 
-    <h4 class="server-title">@ViewBag.Server.Name</h4>
+    <h4 class="server-title">@ViewBag.Server.Name <a asp-controller="Discord" asp-action="ManageServers">⚙️</a></h4>
 
     <ul class="channel-list">
 
@@ -9,7 +9,7 @@
             <li class="channel-item">
                 <a asp-route-id="@channel.Id" asp-action="SendMessage" class="channel-link">
                     <i class="fa-solid fa-hashtag channel-icon"></i>
-                    <span>@channel.Name</span>
+                    <span>@channel.Name </span>
                 </a>
             </li>
         }

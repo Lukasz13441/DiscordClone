@@ -11,6 +11,7 @@
 }
 
 
+
 /* ===================== */
 /* Discord Friends Panel */
 /* ===================== */
@@ -490,4 +491,104 @@
     opacity: 1;
 }
 
+.server-settings-container {
+    display: flex;
+    height: calc(100vh - 60px);
+    background: #2f3136;
+    color: #fff;
+    padding: 0;
+}
 
+/* SIDEBAR */
+.settings-sidebar {
+    width: 260px;
+    background: #202225;
+    padding: 20px;
+    border-right: 2px solid #18191c;
+}
+
+.sidebar-title {
+    margin-bottom: 25px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.sidebar-section h4 {
+    margin: 20px 0 10px;
+    font-size: 14px;
+    color: #b9bbbe;
+}
+
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #2f3136;
+    border: none;
+    text-align: left;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .sidebar-btn:hover {
+        background: #36393f;
+    }
+
+    .sidebar-btn.active {
+        background: #5865F2;
+    }
+
+/* CONTENT */
+.settings-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.settings-section {
+    display: none;
+}
+
+    .settings-section.active {
+        display: block;
+    }
+
+.avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.member-row, .banned-row {
+    display: flex;
+    align-items: center;
+    background: #36393f;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.member-name {
+    flex: 1;
+}
+
+.ban-btn, .unban-btn, .save-btn {
+    background: #ED4245;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.unban-btn {
+    background: #3ba55d;
+}
+
+.save-btn {
+    background: #5865F2;
+    margin-top: 15px;
+}
