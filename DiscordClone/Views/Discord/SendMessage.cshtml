@@ -51,106 +51,131 @@
 <script>
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/chathub")
+        .withAutomaticReconnect()
         .build();
 
-    connection.on("ReceiveMessage", (username, message) => {
-        const div = document.createElement("div");
-        div.innerHTML = `<b>${username}:</b> ${message}`;
-        document.getElementById("messagesList").appendChild(div);
+    // ===============================
+    //  GLOBALNE ZMIENNE
+    // ===============================
+    const userReactions = {}; // Śledzi reakcje BIEŻĄCEGO użytkownika (messageId: {emoji: true})
+
+    // ===============================
+    //  ODBIERANIE WIADOMOŚCI
+    // ===============================
+    connection.on("ReceiveMessage", (id, username, message, date) => {
+        const html = `
+        <div class="message-row" data-message-id="${id}">
+            <img src="" class="avatar"/>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="username">${username}</span>
+                    <span class="timestamp">${new Date(date).toLocaleTimeString()}</span>
+                </div>
+                <div class="message-text">${message}</div>
+                <div class="message-reactions"></div>
+                <div class="add-reaction-btn">➕</div>
+                <div class="message-actions">
+                    <span class="action-button edit-message-btn">✏️</span>
+                    <span class="action-button delete-message-btn">🗑️</span>
+                </div>
+                <div class="reaction-picker" style="display:none;">
+                    <span class="reaction-option" data-emoji="👍">👍</span>
+                    <span class="reaction-option" data-emoji="❤️">❤️</span>
+                    <span class="reaction-option" data-emoji="😂">😂</span>
+                    <span class="reaction-option" data-emoji="🔥">🔥</span>
+                    <span class="reaction-option" data-emoji="😎">😎</span>
+                </div>
+            </div>
+        </div>`;
+
+        document.getElementById("messagesList").innerHTML += html;
     });
 
-    connection.start().catch(err => console.error(err.toString()));
+    // Start połączenia
+    connection.start()
+        .then(() => console.log("✅ Połączono z SignalR"))
+        .catch(err => console.error("❌ Błąd:", err));
 
-    // -------------------------
-    // WYSYŁANIE WIADOMOŚCI
-    // -------------------------
-    document.getElementById("sendBtn").addEventListener("click", function () {
-        const channelId = parseInt(document.getElementById("channelId").value);
-        const userId = parseInt(document.getElementById("UserProfileId").value);
-        const message = document.getElementById("messageInput").value;
+    // ===============================
+    //  WYSYŁANIE WIADOMOŚCI
+    // ===============================
+    document.getElementById("sendBtn").addEventListener("click", () => {
+        const channelId = document.getElementById("channelId").value;
+        const userProfileId = document.getElementById("UserProfileId").value;
+        const messageInput = document.getElementById("messageInput");
 
-        if (!message) return;
-
-        connection.invoke("SendMessage", channelId, userId, message)
-            .catch(err => console.error(err.toString()));
-
-        document.getElementById("messageInput").value = "";
+        if (messageInput.value.trim()) {
+            connection.invoke("SendMessage",
+                parseInt(channelId),
+                parseInt(userProfileId),
+                messageInput.value
+            ).catch(err => console.error(err));
+            
+            messageInput.value = "";
+        }
     });
 
-    // -------------------------
-    // SYSTEM REAKCJI + EDIT/DELETE
-    // -------------------------
-    document.querySelectorAll(".message-row").forEach(row => {
-        const addBtn = row.querySelector(".add-reaction-btn");
-        const picker = row.querySelector(".reaction-picker");
-        const reactionsBox = row.querySelector(".message-reactions");
+    // ===============================
+    //  EDYCJA WIADOMOŚCI
+    // ===============================
+    document.addEventListener("click", e => {
+        if (!e.target.classList.contains("edit-message-btn")) return;
 
-        let pickerOpen = false;
+        const row = e.target.closest(".message-row");
+        const textEl = row.querySelector(".message-text");
+        if (!textEl) return;
+        
+        const oldText = textEl.textContent;
 
-        // Kliknięcie ➕ otwiera panel
-        addBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            picker.style.display = "flex";
-            pickerOpen = true;
-        });
+        // Zamień tekst na pole input
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = oldText;
+        input.className = "edit-input";
+        textEl.replaceWith(input);
+        input.focus();
 
-        // Kliknięcie reakcji
-        picker.querySelectorAll(".reaction-option").forEach(option => {
-            option.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const emoji = option.textContent;
-
-                // Sprawdź czy reakcja już istnieje
-                let existing = reactionsBox.querySelector(`.single-reaction[data-emoji="${emoji}"]`);
-                if (existing) {
-                    let countSpan = existing.querySelector(".count");
-                    countSpan.textContent = parseInt(countSpan.textContent) + 1;
-                } else {
-                    let span = document.createElement("span");
-                    span.classList.add("single-reaction");
-                    span.setAttribute("data-emoji", emoji);
-                    span.innerHTML = `${emoji} <span class="count">1</span>`;
-                    reactionsBox.appendChild(span);
-                }
-
-                picker.style.display = "none";
-                pickerOpen = false;
-            });
-        });
-
-        // Kliknięcie poza panelem zamyka go
-        document.addEventListener("click", (e) => {
-            if (pickerOpen) {
-                if (!picker.contains(e.target) && e.target !== addBtn) {
-                    picker.style.display = "none";
-                    pickerOpen = false;
-                }
+        // Zapisz po utracie focusu / Enter
+        input.addEventListener("blur", () => {
+            if (input.value.trim() !== oldText) {
+                connection.invoke("EditMessage", parseInt(row.dataset.messageId), input.value)
+                    .catch(err => console.error(err));
+            } else {
+                input.outerHTML = `<div class="message-text">${oldText}</div>`;
             }
         });
 
-        // Usuwanie wiadomości
-        row.querySelector(".delete-message-btn").addEventListener("click", () => {
-            row.remove();
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") input.blur();
+            if (e.key === "Escape") {
+                input.value = oldText;
+                input.blur();
+            }
         });
+    });
 
-        // Edycja wiadomości
-        row.querySelector(".edit-message-btn").addEventListener("click", () => {
-            const textDiv = row.querySelector(".message-text");
-            const oldText = textDiv.textContent;
+    connection.on("MessageEdited", (id, newText) => {
+        const row = document.querySelector(`[data-message-id="${id}"]`);
+        const input = row?.querySelector("input.edit-input");
+        if (input) {
+            input.outerHTML = `<div class="message-text">${newText}</div>`;
+        }
+    });
 
-            const input = document.createElement("input");
-            input.value = oldText;
-            input.classList.add("edit-input");
+    // ===============================
+    //  USUWANIE WIADOMOŚCI
+    // ===============================
+    document.addEventListener("click", e => {
+        if (e.target.classList.contains("delete-message-btn")) {
+            if (confirm("Czy na pewno chcesz usunąć wiadomość?")) {
+                const row = e.target.closest(".message-row");
+                connection.invoke("DeleteMessage", parseInt(row.dataset.messageId))
+                    .catch(err => console.error(err));
+            }
+        }
+    });
 
-            textDiv.replaceWith(input);
-            input.focus();
-
-            input.addEventListener("blur", () => {
-                const newDiv = document.createElement("div");
-                newDiv.classList.add("message-text");
-                newDiv.textContent = input.value;
-                input.replaceWith(newDiv);
-            });
-        });
+    connection.on("MessageDeleted", id => {
+        document.querySelector(`[data-message-id="${id}"]`)?.remove();
     });
 </script>
