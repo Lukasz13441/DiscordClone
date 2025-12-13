@@ -96,15 +96,41 @@ namespace DiscordClone.Services
 
 
 
-        public List<Message> GetChannelMessages(int channelId)
+        public List<object> GetChannelMessages(int channelId)
         {
-            var messages = _context.Messages
+            return _context.Messages
                 .Where(m => m.ChannelId == channelId)
                 .Include(m => m.User)
+                .Include(m => m.Reactions).ThenInclude(r => r.User)
                 .OrderBy(m => m.CreatedAt)
-                .ToList();
-            if (messages == null) return new List<Message>();
-            return messages;
+                .Select(m => new
+                {
+                    m.Id,
+                    m.Value,
+                    m.CreatedAt,
+                    User = new
+                    {
+                        m.User.Id,
+                        m.User.Username,
+                        m.User.AvatarURL
+                    },
+                    // Grupujemy reakcje po emoji – dokładnie jak na Discordzie
+                    Reactions = m.Reactions
+                        .GroupBy(r => r.Emoji)
+                        .Select(g => new
+                        {
+                            Emoji = g.Key,
+                            Count = g.Count(),
+                            Users = g.Select(r => new
+                            {
+                                r.User.Id,
+                                r.User.Username
+                            }).ToList()
+                        })
+                        .Where(g => g.Count > 0)
+                        .ToList()
+                })
+                .ToList<object>(); // <-- tutaj rzutujemy na object, żeby ViewBag przyjął
         }
 
         public Server GetServerFromChannelId(int id)

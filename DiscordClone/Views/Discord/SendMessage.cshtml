@@ -1,4 +1,5 @@
-﻿<div class="chat-container">
+﻿<link rel="stylesheet" href="/css/test.css" />
+<div class="chat-container">
     <div id="messagesList" class="messages-area">
         @foreach (var msg in ViewBag.Messages)
         {
@@ -14,7 +15,18 @@
                     <div class="message-text">@msg.Value</div>
 
                     <!-- miejsce na reakcje -->
-                    <div class="message-reactions"></div>
+                    <div class="message-reactions">
+                        @foreach (var reaction in msg.Reactions)
+                        {
+                            var count = reaction.Users.Count;
+                            if (count > 0)
+                            {
+                                <div class="reaction data-emoji="@reaction.Emoji">
+                                    @reaction.Emoji <span class="count">@count</span>
+                                </div>
+                            }
+                        }
+                    </div>
 
                     <!-- ikona dodawania reakcji -->
                     <div class="add-reaction-btn">➕</div>
@@ -48,134 +60,4 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .withAutomaticReconnect()
-        .build();
-
-    // ===============================
-    //  GLOBALNE ZMIENNE
-    // ===============================
-    const userReactions = {}; // Śledzi reakcje BIEŻĄCEGO użytkownika (messageId: {emoji: true})
-
-    // ===============================
-    //  ODBIERANIE WIADOMOŚCI
-    // ===============================
-    connection.on("ReceiveMessage", (id, username, message, date) => {
-        const html = `
-        <div class="message-row" data-message-id="${id}">
-            <img src="" class="avatar"/>
-            <div class="message-content">
-                <div class="message-header">
-                    <span class="username">${username}</span>
-                    <span class="timestamp">${new Date(date).toLocaleTimeString()}</span>
-                </div>
-                <div class="message-text">${message}</div>
-                <div class="message-reactions"></div>
-                <div class="add-reaction-btn">➕</div>
-                <div class="message-actions">
-                    <span class="action-button edit-message-btn">✏️</span>
-                    <span class="action-button delete-message-btn">🗑️</span>
-                </div>
-                <div class="reaction-picker" style="display:none;">
-                    <span class="reaction-option" data-emoji="👍">👍</span>
-                    <span class="reaction-option" data-emoji="❤️">❤️</span>
-                    <span class="reaction-option" data-emoji="😂">😂</span>
-                    <span class="reaction-option" data-emoji="🔥">🔥</span>
-                    <span class="reaction-option" data-emoji="😎">😎</span>
-                </div>
-            </div>
-        </div>`;
-
-        document.getElementById("messagesList").innerHTML += html;
-    });
-
-    // Start połączenia
-    connection.start()
-        .then(() => console.log("✅ Połączono z SignalR"))
-        .catch(err => console.error("❌ Błąd:", err));
-
-    // ===============================
-    //  WYSYŁANIE WIADOMOŚCI
-    // ===============================
-    document.getElementById("sendBtn").addEventListener("click", () => {
-        const channelId = document.getElementById("channelId").value;
-        const userProfileId = document.getElementById("UserProfileId").value;
-        const messageInput = document.getElementById("messageInput");
-
-        if (messageInput.value.trim()) {
-            connection.invoke("SendMessage",
-                parseInt(channelId),
-                parseInt(userProfileId),
-                messageInput.value
-            ).catch(err => console.error(err));
-            
-            messageInput.value = "";
-        }
-    });
-
-    // ===============================
-    //  EDYCJA WIADOMOŚCI
-    // ===============================
-    document.addEventListener("click", e => {
-        if (!e.target.classList.contains("edit-message-btn")) return;
-
-        const row = e.target.closest(".message-row");
-        const textEl = row.querySelector(".message-text");
-        if (!textEl) return;
-        
-        const oldText = textEl.textContent;
-
-        // Zamień tekst na pole input
-        const input = document.createElement("input");
-        input.type = "text";
-        input.value = oldText;
-        input.className = "edit-input";
-        textEl.replaceWith(input);
-        input.focus();
-
-        // Zapisz po utracie focusu / Enter
-        input.addEventListener("blur", () => {
-            if (input.value.trim() !== oldText) {
-                connection.invoke("EditMessage", parseInt(row.dataset.messageId), input.value)
-                    .catch(err => console.error(err));
-            } else {
-                input.outerHTML = `<div class="message-text">${oldText}</div>`;
-            }
-        });
-
-        input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") input.blur();
-            if (e.key === "Escape") {
-                input.value = oldText;
-                input.blur();
-            }
-        });
-    });
-
-    connection.on("MessageEdited", (id, newText) => {
-        const row = document.querySelector(`[data-message-id="${id}"]`);
-        const input = row?.querySelector("input.edit-input");
-        if (input) {
-            input.outerHTML = `<div class="message-text">${newText}</div>`;
-        }
-    });
-
-    // ===============================
-    //  USUWANIE WIADOMOŚCI
-    // ===============================
-    document.addEventListener("click", e => {
-        if (e.target.classList.contains("delete-message-btn")) {
-            if (confirm("Czy na pewno chcesz usunąć wiadomość?")) {
-                const row = e.target.closest(".message-row");
-                connection.invoke("DeleteMessage", parseInt(row.dataset.messageId))
-                    .catch(err => console.error(err));
-            }
-        }
-    });
-
-    connection.on("MessageDeleted", id => {
-        document.querySelector(`[data-message-id="${id}"]`)?.remove();
-    });
-</script>
+<script src="/js/Chathub.js"></script>

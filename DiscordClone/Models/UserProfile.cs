@@ -21,6 +21,8 @@ namespace DiscordClone.Models
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Friendship> Friendships { get; set; }
         public virtual ICollection<ServerMember> ServerMembers { get; set; }
+
+        public virtual List<MessageReaction> Reactions { get; set; } = new();
     }
 
 }
