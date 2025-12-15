@@ -1,4 +1,5 @@
 using DiscordClone.Data;
+using DiscordClone.Hubs;
 using DiscordClone.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

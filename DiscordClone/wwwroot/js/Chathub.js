@@ -10,6 +10,24 @@ const connection = new signalR.HubConnectionBuilder()
 // ===============================
 const userReactions = {}; // Śledzi reakcje BIEŻĄCEGO użytkownika (messageId: {emoji: true})
 
+// Mapowanie reakcji: klucz -> emoji
+const REACTION_MAP = {
+    '1': '👍',
+    '2': '❤️',
+    '3': '😂',
+    '4': '🔥',
+    '5': '😎'
+};
+
+// Odwrotne mapowanie: emoji -> klucz
+const EMOJI_TO_KEY = {
+    '👍': '1',
+    '❤️': '2',
+    '😂': '3',
+    '🔥': '4',
+    '😎': '5'
+};
+
 // ===============================
 //  ODBIERANIE WIADOMOŚCI
 // ===============================
@@ -30,11 +48,11 @@ connection.on("ReceiveMessage", (id, username, message, date) => {
                     <span class="action-button delete-message-btn">🗑️</span>
                 </div>
                 <div class="reaction-picker" style="display:none;">
-                    <span class="reaction-option" data-emoji="👍">👍</span>
-                    <span class="reaction-option" data-emoji="❤️">❤️</span>
-                    <span class="reaction-option" data-emoji="😂">😂</span>
-                    <span class="reaction-option" data-emoji="🔥">🔥</span>
-                    <span class="reaction-option" data-emoji="😎">😎</span>
+                    <span class="reaction-option" data-reaction-key="1">👍</span>
+                    <span class="reaction-option" data-reaction-key="2">❤️</span>
+                    <span class="reaction-option" data-reaction-key="3">😂</span>
+                    <span class="reaction-option" data-reaction-key="4">🔥</span>
+                    <span class="reaction-option" data-reaction-key="5">😎</span>
                 </div>
             </div>
         </div>`;
@@ -65,6 +83,31 @@ document.getElementById("sendBtn").addEventListener("click", () => {
         messageInput.value = "";
     }
 });
+
+const messageInput = document.getElementById("messageInput");
+
+messageInput.addEventListener("keydown", (e) => {
+    // Enter without Shift
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // stop newline / form submit
+
+        const channelId = document.getElementById("channelId").value;
+        const userProfileId = document.getElementById("UserProfileId").value;
+
+        if (messageInput.value.trim()) {
+            connection.invoke(
+                "SendMessage",
+                parseInt(channelId),
+                parseInt(userProfileId),
+                messageInput.value
+            ).catch(err => console.error(err));
+
+            messageInput.value = "";
+        }
+    }
+});
+
+
 
 // ===============================
 //  EDYCJA WIADOMOŚCI
@@ -129,129 +172,116 @@ document.addEventListener("click", e => {
 connection.on("MessageDeleted", id => {
     document.querySelector(`[data-message-id="${id}"]`)?.remove();
 });
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-document.addEventListener('DOMContentLoaded', () => {
 
-    // ---------------------------------------------------------------
-    // 1. POŁĄCZENIE Z SIGNALR
-    // ---------------------------------------------------------------
-    // Upewnij się, że "/chatHub" to adres Twojego Huba w Program.cs
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
+// ===============================
+//  REAKCJE
+// ===============================
 
-    async function start() {
-        try {
-            await connection.start();
-            console.log("SignalR Connected.");
-        } catch (err) {
-            console.error(err);
-            setTimeout(start, 5000); // Próba ponownego połączenia po 5 sek
+// ---------------------------------------------------------------
+// ODBIERANIE REAKCJI (Serwer -> Klient)
+// ---------------------------------------------------------------
+connection.on("UpdateReaction", (messageId, reactionKey, newCount) => {
+    // Znajdź wiersz wiadomości po ID
+    const messageRow = document.querySelector(`.message-row[data-message-id='${messageId}']`);
+    if (!messageRow) return;
+
+    const reactionsContainer = messageRow.querySelector('.message-reactions');
+
+    // Pobierz emoji odpowiadające kluczowi
+    const emoji = REACTION_MAP[reactionKey] || reactionKey;
+
+    // Szukamy, czy taka reakcja już jest wyrenderowana
+    let existingBadge = reactionsContainer.querySelector(`.reaction[data-reaction-key='${reactionKey}']`);
+
+    if (newCount > 0) {
+        // SCENARIUSZ A: Ktoś dodał reakcję (lub jest ich więcej)
+        if (existingBadge) {
+            // Tylko aktualizujemy liczbę
+            existingBadge.querySelector('.count').innerText = newCount;
+
+            // Efekt wizualny (pulsowanie)
+            existingBadge.classList.add('pulse-anim');
+            setTimeout(() => existingBadge.classList.remove('pulse-anim'), 300);
+        } else {
+            // Tworzymy nową "plakietkę" z reakcją
+            const newBadge = document.createElement('div');
+            newBadge.className = 'reaction';
+            newBadge.setAttribute('data-reaction-key', reactionKey);
+            // HTML wewnątrz: emotka + licznik
+            newBadge.innerHTML = `${emoji} <span class="count">${newCount}</span>`;
+
+            reactionsContainer.appendChild(newBadge);
+        }
+    } else {
+        // SCENARIUSZ B: Licznik spadł do 0 -> USUŃ element
+        if (existingBadge) {
+            existingBadge.remove();
         }
     }
-    start();
+});
 
-    // ---------------------------------------------------------------
-    // 2. ODBIERANIE REAKCJI (Serwer -> Klient)
-    // ---------------------------------------------------------------
-    connection.on("UpdateReaction", (messageId, emoji, newCount) => {
-        // Znajdź wiersz wiadomości po ID
-        const messageRow = document.querySelector(`.message-row[data-message-id='${messageId}']`);
-        if (!messageRow) return;
+// ---------------------------------------------------------------
+// OBSŁUGA KLIKNIĘĆ (UI)
+// ---------------------------------------------------------------
+document.body.addEventListener('click', async (e) => {
 
-        const reactionsContainer = messageRow.querySelector('.message-reactions');
+    // A. Kliknięcie w przycisk "PLUS" (Otwórz/Zamknij menu)
+    if (e.target.closest('.add-reaction-btn')) {
+        const btn = e.target.closest('.add-reaction-btn');
+        // Szukamy pickera w pobliżu przycisku (wewnątrz tego samego rodzica message-content)
+        const picker = btn.parentElement.querySelector('.reaction-picker');
 
-        // Szukamy, czy taka reakcja już jest wyrenderowana
-        // Używamy bezpiecznego selektora (zakładając, że HTML jest poprawny)
-        let existingBadge = reactionsContainer.querySelector(`.reaction[data-emoji='${emoji}']`);
-
-        if (newCount > 0) {
-            // SCENARIUSZ A: Ktoś dodał reakcję (lub jest ich więcej)
-            if (existingBadge) {
-                // Tylko aktualizujemy liczbę
-                existingBadge.querySelector('.count').innerText = newCount;
-
-                // Efekt wizualny (pulsowanie)
-                existingBadge.classList.add('pulse-anim');
-                setTimeout(() => existingBadge.classList.remove('pulse-anim'), 300);
-            } else {
-                // Tworzymy nową "plakietkę" z reakcją
-                const newBadge = document.createElement('div');
-                newBadge.className = 'reaction';
-                newBadge.setAttribute('data-emoji', emoji);
-                // HTML wewnątrz: emotka + licznik
-                newBadge.innerHTML = `${emoji} <span class="count">${newCount}</span>`;
-
-                reactionsContainer.appendChild(newBadge);
-            }
-        } else {
-            // SCENARIUSZ B: Licznik spadł do 0 -> USUŃ element
-            if (existingBadge) {
-                existingBadge.remove();
-            }
-        }
-    });
-
-    // ---------------------------------------------------------------
-    // 3. OBSŁUGA KLIKNIĘĆ (UI)
-    // ---------------------------------------------------------------
-    document.body.addEventListener('click', async (e) => {
-
-        // A. Kliknięcie w przycisk "PLUS" (Otwórz/Zamknij menu)
-        if (e.target.closest('.add-reaction-btn')) {
-            const btn = e.target.closest('.add-reaction-btn');
-            // Szukamy pickera w pobliżu przycisku (wewnątrz tego samego rodzica message-content)
-            const picker = btn.parentElement.querySelector('.reaction-picker');
-
-            if (picker) {
-                // Zamknij wszystkie inne otwarte pickery na stronie
-                document.querySelectorAll('.reaction-picker').forEach(p => {
-                    if (p !== picker) p.style.display = 'none';
-                });
-
-                // Przełącz widoczność (Toggle)
-                const isHidden = picker.style.display === 'none' || picker.style.display === '';
-                picker.style.display = isHidden ? 'flex' : 'none';
-            }
-            return;
-        }
-
-        // B. Kliknięcie w konkretną emotkę w menu (Wyślij do serwera)
-        if (e.target.classList.contains('reaction-option')) {
-            const emoji = e.target.innerHTML; // np. 👍
-            const picker = e.target.closest('.reaction-picker');
-
-            // Pobieramy ID wiadomości
-            const messageRow = picker.closest('.message-row');
-            const messageId = messageRow.getAttribute('data-message-id');
-
-            // Pobieramy ID aktualnie zalogowanego usera
-            const userIdInput = document.getElementById('UserProfileId');
-            if (!userIdInput) {
-                console.error("Brak inputa #UserProfileId!");
-                return;
-            }
-            const userId = userIdInput.value;
-
-            // Ukryj picker natychmiast po wyborze
-            picker.style.display = 'none';
-
-            // Wyślij sygnał do serwera
-            try {
-                // Nazwa "ToggleReaction" musi pasować do metody w C#
-                await connection.invoke("ToggleReaction", parseInt(messageId), emoji, userId);
-            } catch (err) {
-                console.error("Błąd wysyłania reakcji: ", err);
-            }
-            return;
-        }
-
-        // C. Kliknięcie gdziekolwiek indziej (Zamknij wszystkie pickery)
-        if (!e.target.closest('.reaction-picker') && !e.target.closest('.add-reaction-btn')) {
+        if (picker) {
+            // Zamknij wszystkie inne otwarte pickery na stronie
             document.querySelectorAll('.reaction-picker').forEach(p => {
-                p.style.display = 'none';
+                if (p !== picker) p.style.display = 'none';
             });
+
+            // Przełącz widoczność (Toggle)
+            const isHidden = picker.style.display === 'none' || picker.style.display === '';
+            picker.style.display = isHidden ? 'flex' : 'none';
         }
-    });
+        return;
+    }
+
+    // B. Kliknięcie w konkretną emotkę w menu (Wyślij do serwera)
+    if (e.target.classList.contains('reaction-option')) {
+        const reactionKey = e.target.getAttribute('data-reaction-key'); // np. "1", "2"
+
+        // Debug log to verify we're sending the key, not emoji
+        console.log('Sending reaction key:', reactionKey);
+
+        const picker = e.target.closest('.reaction-picker');
+
+        // Pobieramy ID wiadomości
+        const messageRow = picker.closest('.message-row');
+        const messageId = messageRow.getAttribute('data-message-id');
+
+        // Pobieramy ID aktualnie zalogowanego usera
+        const userIdInput = document.getElementById('UserProfileId');
+        if (!userIdInput) {
+            console.error("Brak inputa #UserProfileId!");
+            return;
+        }
+        const userId = userIdInput.value;
+
+        // Ukryj picker natychmiast po wyborze
+        picker.style.display = 'none';
+
+        // Wyślij sygnał do serwera z kluczem reakcji (string)
+        try {
+            // Nazwa "ToggleReaction" musi pasować do metody w C#
+            await connection.invoke("ToggleReaction", parseInt(messageId), reactionKey, userId);
+        } catch (err) {
+            console.error("Błąd wysyłania reakcji: ", err);
+        }
+        return;
+    }
+
+    // C. Kliknięcie gdziekolwiek indziej (Zamknij wszystkie pickery)
+    if (!e.target.closest('.reaction-picker') && !e.target.closest('.add-reaction-btn')) {
+        document.querySelectorAll('.reaction-picker').forEach(p => {
+            p.style.display = 'none';
+        });
+    }
 });

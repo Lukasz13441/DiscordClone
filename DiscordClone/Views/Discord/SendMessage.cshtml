@@ -5,15 +5,12 @@
         {
             <div class="message-row" data-message-id="@msg.Id">
                 <img src="@msg.User.AvatarURL" class="avatar" />
-
                 <div class="message-content">
                     <div class="message-header">
                         <span class="username">@msg.User.Username</span>
                         <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
                     </div>
-
                     <div class="message-text">@msg.Value</div>
-
                     <!-- miejsce na reakcje -->
                     <div class="message-reactions">
                         @foreach (var reaction in msg.Reactions)
@@ -21,40 +18,45 @@
                             var count = reaction.Users.Count;
                             if (count > 0)
                             {
-                                <div class="reaction data-emoji="@reaction.Emoji">
-                                    @reaction.Emoji <span class="count">@count</span>
+                                // Mapowanie klucza reakcji na emoji
+                                var emojiDisplay = reaction.Emoji switch
+                                {
+                                    "1" => "👍",
+                                    "2" => "❤️",
+                                    "3" => "😂",
+                                    "4" => "🔥",
+                                    "5" => "😎",
+                                    _ => reaction.Emoji
+                                };
+                                <div class="reaction" data-reaction-key="@reaction.Emoji">
+                                    @emojiDisplay <span class="count">@count</span>
                                 </div>
                             }
                         }
                     </div>
-
                     <!-- ikona dodawania reakcji -->
                     <div class="add-reaction-btn">➕</div>
-
                     <!-- dodatkowe akcje -->
                     <div class="message-actions">
                         <span class="action-button edit-message-btn">✏️</span>
                         <span class="action-button delete-message-btn">🗑️</span>
                     </div>
-
                     <!-- popup z reakcjami -->
-                    <div class="reaction-picker">
-                        <span class="reaction-option">👍</span>
-                        <span class="reaction-option">❤️</span>
-                        <span class="reaction-option">😂</span>
-                        <span class="reaction-option">🔥</span>
-                        <span class="reaction-option">😎</span>
+                    <div class="reaction-picker" style="display:none;">
+                        <span class="reaction-option" data-reaction-key="1">👍</span>
+                        <span class="reaction-option" data-reaction-key="2">❤️</span>
+                        <span class="reaction-option" data-reaction-key="3">😂</span>
+                        <span class="reaction-option" data-reaction-key="4">🔥</span>
+                        <span class="reaction-option" data-reaction-key="5">😎</span>
                     </div>
                 </div>
             </div>
         }
     </div>
-
     <div class="chat-input-area">
         <input hidden id="channelId" value="@ViewBag.Id" />
         <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
         <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
-
         <input type="text" id="messageInput" class="chat-input" placeholder="Wiadomość" />
         <button id="sendBtn" class="chat-send-btn">Wyślij</button>
     </div>
