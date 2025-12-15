@@ -1,5 +1,5 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    console.log("Chathub.js loaded");
+console.log("Chathub.js loaded");
 
     // ==========================================================
     // 1. KONFIGURACJA I MAPOWANIE (Liczby <-> Emoji)
@@ -17,55 +17,55 @@
     // ==========================================================
     // 2. POŁĄCZENIE Z SIGNALR
     // ==========================================================
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .withAutomaticReconnect()
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chathub")
+    .withAutomaticReconnect()
         .configureLogging(signalR.LogLevel.Information)
-        .build();
+    .build();
 
     // ==========================================================
     // 3. ODBIERANIE DANYCH Z SERWERA
     // ==========================================================
 
     // --- A. Odbieranie nowej wiadomości ---
-    connection.on("ReceiveMessage", (id, username, message, date) => {
+connection.on("ReceiveMessage", (id, username, message, date) => {
         // Generujemy opcje wyboru reakcji używając naszego mapowania (ID zamiast samego emoji w data atrybucie)
         let reactionPickerHtml = '';
         for (const [key, emoji] of Object.entries(REACTION_MAP)) {
             reactionPickerHtml += `<span class="reaction-option" data-reaction-id="${key}">${emoji}</span>`;
         }
 
-        const html = `
-            <div class="message-row" data-message-id="${id}">
+    const html = `
+        <div class="message-row" data-message-id="${id}">
                 <img src="/img/default-avatar.png" class="avatar" alt="Avatar"/> <!-- Ustaw domyślny avatar -->
-                <div class="message-content">
-                    <div class="message-header">
-                        <span class="username">${username}</span>
-                        <span class="timestamp">${new Date(date).toLocaleTimeString()}</span>
-                    </div>
-                    <div class="message-text">${message}</div>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="username">${username}</span>
+                    <span class="timestamp">${new Date(date).toLocaleTimeString()}</span>
+                </div>
+                <div class="message-text">${message}</div>
                     
                     <!-- Kontener na wyświetlanie dodanych reakcji -->
-                    <div class="message-reactions"></div>
+                <div class="message-reactions"></div>
                     
                     <!-- Przycisk dodawania reakcji -->
-                    <div class="add-reaction-btn">➕</div>
+                <div class="add-reaction-btn">➕</div>
                     
                     <!-- Przyciski akcji (edycja/usuwanie) -->
-                    <div class="message-actions">
-                        <span class="action-button edit-message-btn">✏️</span>
-                        <span class="action-button delete-message-btn">🗑️</span>
-                    </div>
+                <div class="message-actions">
+                    <span class="action-button edit-message-btn">✏️</span>
+                    <span class="action-button delete-message-btn">🗑️</span>
+                </div>
 
                     <!-- Menu wyboru reakcji (generowane dynamicznie) -->
-                    <div class="reaction-picker" style="display:none;">
+                <div class="reaction-picker" style="display:none;">
                         ${reactionPickerHtml}
-                    </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
 
-        document.getElementById("messagesList").innerHTML += html;
-    });
+    document.getElementById("messagesList").innerHTML += html;
+});
 
     // --- B. Aktualizacja reakcji (Odbieramy ID reakcji i licznik) ---
     connection.on("UpdateReaction", (messageId, reactionId, newCount) => {
@@ -87,25 +87,26 @@
                 // Animacja pulsowania
                 existingBadge.classList.add('pulse-anim');
                 setTimeout(() => existingBadge.classList.remove('pulse-anim'), 300);
-            } else {
+        } else {
                 // Tworzymy nową plakietkę
                 const newBadge = document.createElement('div');
                 newBadge.className = 'reaction';
                 newBadge.setAttribute('data-reaction-id', reactionId); // Przechowujemy ID
                 newBadge.innerHTML = `${emojiSymbol} <span class="count">${newCount}</span>`;
                 reactionsContainer.appendChild(newBadge);
-            }
+        }
         } else {
             // Jeśli licznik spadł do 0, usuwamy plakietkę
             if (existingBadge) {
                 existingBadge.remove();
-            }
+        }
         }
     });
+});
 
     // --- C. Edycja i usuwanie (potwierdzenia z serwera) ---
-    connection.on("MessageEdited", (id, newText) => {
-        const row = document.querySelector(`[data-message-id="${id}"]`);
+connection.on("MessageEdited", (id, newText) => {
+    const row = document.querySelector(`[data-message-id="${id}"]`);
         // Jeśli edycja jest aktywna (input), nadpisz input, jeśli nie - nadpisz div
         const textContainer = row?.querySelector(".message-text") || row?.querySelector("input.edit-input");
 
@@ -116,15 +117,18 @@
             newDiv.textContent = newText;
             textContainer.replaceWith(newDiv);
         }
-    });
+    }
+});
 
-    connection.on("MessageDeleted", id => {
+connection.on("MessageDeleted", id => {
         const row = document.querySelector(`[data-message-id="${id}"]`);
         if (row) {
             row.style.opacity = '0';
             setTimeout(() => row.remove(), 300); // Mała animacja usuwania
         }
-    });
+});
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================================
     // 4. START POŁĄCZENIA
@@ -160,8 +164,8 @@
                 ).catch(err => console.error(err));
 
                 messageInput.value = "";
-            }
-        });
+        }
+    });
     }
 
     // --- Globalny Listener (Delegacja zdarzeń) ---
@@ -170,12 +174,13 @@
         // 1. Otwieranie/Zamykanie Pickera Reakcji
         if (e.target.closest('.add-reaction-btn')) {
             const btn = e.target.closest('.add-reaction-btn');
+            // Szukamy pickera w pobliżu przycisku (wewnątrz tego samego rodzica message-content)
             const picker = btn.parentElement.querySelector('.reaction-picker');
 
             // Zamknij inne
-            document.querySelectorAll('.reaction-picker').forEach(p => {
-                if (p !== picker) p.style.display = 'none';
-            });
+                document.querySelectorAll('.reaction-picker').forEach(p => {
+                    if (p !== picker) p.style.display = 'none';
+                });
 
             if (picker) {
                 picker.style.display = (picker.style.display === 'none') ? 'flex' : 'none';
@@ -185,8 +190,12 @@
 
         // 2. WYBÓR REAKCJI (Wysyłanie ID do serwera)
         if (e.target.classList.contains('reaction-option')) {
+            const emoji = e.target.innerHTML; // np. 👍
             const picker = e.target.closest('.reaction-picker');
+
+            // Pobieramy ID wiadomości
             const messageRow = picker.closest('.message-row');
+            const messageId = messageRow.getAttribute('data-message-id');
 
             const messageId = parseInt(messageRow.getAttribute('data-message-id'));
             const reactionId = parseInt(e.target.getAttribute('data-reaction-id')); // Pobieramy np. 1, 2, 3...
@@ -204,8 +213,8 @@
             } catch (err) {
                 console.error("Błąd wysyłania reakcji:", err);
             }
-            return;
-        }
+                return;
+            }
 
         // 3. Edycja Wiadomości - Kliknięcie "Ołówek"
         if (e.target.classList.contains("edit-message-btn")) {

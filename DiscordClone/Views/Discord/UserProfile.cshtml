@@ -107,21 +107,22 @@
     <div class="profile-content">
 
         <!-- EDIT PROFILE -->
+        <div id="section-profile" class="profile-section active">
         <form asp-action="UserProfileForm" asp-controller="Discord" id="section-profile" class="profile-section active" enctype="multipart/form-data">
-    <h3>Edit Profile</h3>
+            <h3>Edit Profile</h3>
 
-    <div class="avatar-section">
+            <div class="avatar-section">
         <img src="@Model.AvatarURL" id="avatarPreview" class="profile-avatar" />
-        <label class="upload-btn">
-            Change Avatar
+                <label class="upload-btn">
+                    Change Avatar
             <input type="file" id="avatarInput" accept="image/*" asp-for="AvatarURL">
-        </label>
-    </div>
+                </label>
+            </div>
 
-    <label>Username</label>
+            <label>Username</label>
     <input type="text" id="usernameInput" class="form-control" value="@Model.Username" asp-for="Username">
 
-    <label class="mt-3">Bio</label>
+            <label class="mt-3">Bio</label>
     <textarea id="bioInput" class="form-control" rows="4" asp-for="BIO">@Model.BIO</textarea>
 
     <button type="submit" class="save-btn" id="saveProfileBtn">Save Profile</button>
