@@ -24,7 +24,7 @@ namespace DiscordClone.Hubs
             {
                 Value = message,
                 ChannelId = channelId,
-                UserId = userId,  // Changed from UserProfileId to UserId
+                UserId = userId,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -62,16 +62,14 @@ namespace DiscordClone.Hubs
             await Clients.All.SendAsync("MessageDeleted", messageId);
         }
 
-        // Toggle reakcji - teraz używa klucza string zamiast emoji
-        public async Task ToggleReaction(int messageId, string reactionKey, string userId)
+        // Toggle reakcji - FIXED to work with your original model
+        public async Task ToggleReaction(int messageId, string reactionKey, int userId)
         {
-            var userIdInt = int.Parse(userId);
-
             // Sprawdź, czy użytkownik już zareagował tym kluczem
             var existingReaction = await _context.MessageReactions
                 .FirstOrDefaultAsync(r =>
                     r.MessageId == messageId &&
-                    r.UserId == userIdInt &&
+                    r.UserId == userId &&
                     r.Emoji == reactionKey);
 
             if (existingReaction != null)
@@ -81,13 +79,13 @@ namespace DiscordClone.Hubs
             }
             else
             {
-                // Dodaj nową reakcję
+                // Dodaj nową reakcję - Count is set to 1 (required by your model)
                 var newReaction = new MessageReaction
                 {
                     MessageId = messageId,
-                    UserId = userIdInt,
-                    Emoji = reactionKey,  // Teraz zapisujemy "1", "2", "3" etc. zamiast emoji
-                    Count = 1
+                    UserId = userId,
+                    Emoji = reactionKey,
+                    Count = 1  // Each individual reaction has Count = 1
                 };
                 _context.MessageReactions.Add(newReaction);
             }
@@ -98,8 +96,14 @@ namespace DiscordClone.Hubs
             var totalCount = await _context.MessageReactions
                 .CountAsync(r => r.MessageId == messageId && r.Emoji == reactionKey);
 
+            // Pobierz listę userIds którzy zareagowali
+            var userIds = await _context.MessageReactions
+                .Where(r => r.MessageId == messageId && r.Emoji == reactionKey)
+                .Select(r => r.UserId)
+                .ToListAsync();
+
             // Wyślij update do wszystkich klientów
-            await Clients.All.SendAsync("UpdateReaction", messageId, reactionKey, totalCount);
+            await Clients.All.SendAsync("UpdateReaction", messageId, reactionKey, totalCount, userIds);
         }
     }
 }

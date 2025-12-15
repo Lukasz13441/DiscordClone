@@ -1,4 +1,5 @@
 ﻿<link rel="stylesheet" href="/css/test.css" />
+
 <div class="chat-container">
     <div id="messagesList" class="messages-area">
         @foreach (var msg in ViewBag.Messages)
@@ -11,14 +12,15 @@
                         <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
                     </div>
                     <div class="message-text">@msg.Value</div>
-                    <!-- miejsce na reakcje -->
+
+                    <!-- Kontener na reakcje -->
                     <div class="message-reactions">
                         @foreach (var reaction in msg.Reactions)
                         {
-                            var count = reaction.Users.Count;
+                            var count = reaction.Count;
                             if (count > 0)
                             {
-                                // Mapowanie klucza reakcji na emoji
+                                // Mapowanie klucza reakcji na emoji (MUST MATCH JavaScript REACTION_MAP)
                                 var emojiDisplay = reaction.Emoji switch
                                 {
                                     "1" => "👍",
@@ -34,14 +36,17 @@
                             }
                         }
                     </div>
-                    <!-- ikona dodawania reakcji -->
+
+                    <!-- Przycisk dodawania reakcji -->
                     <div class="add-reaction-btn">➕</div>
-                    <!-- dodatkowe akcje -->
+
+                    <!-- Akcje (edycja/usuwanie) -->
                     <div class="message-actions">
                         <span class="action-button edit-message-btn">✏️</span>
                         <span class="action-button delete-message-btn">🗑️</span>
                     </div>
-                    <!-- popup z reakcjami -->
+
+                    <!-- Menu wyboru reakcji (MUST USE data-reaction-key) -->
                     <div class="reaction-picker" style="display:none;">
                         <span class="reaction-option" data-reaction-key="1">👍</span>
                         <span class="reaction-option" data-reaction-key="2">❤️</span>
@@ -53,6 +58,7 @@
             </div>
         }
     </div>
+
     <div class="chat-input-area">
         <input hidden id="channelId" value="@ViewBag.Id" />
         <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
@@ -61,5 +67,6 @@
         <button id="sendBtn" class="chat-send-btn">Wyślij</button>
     </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script src="/js/Chathub.js"></script>

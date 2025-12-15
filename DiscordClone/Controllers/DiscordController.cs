@@ -121,26 +121,6 @@ namespace DiscordClone.Controllers
             _FriendsService.AcceptFriendship(GetUserId(), Id);
             return RedirectToAction("Index");
         }
-        
-
-        public IActionResult Server(int Id)
-        {
-            var userId = GetUserId();
-            ViewBag.Servers = _service.GetUserServers(userId);
-            ViewBag.Chanels = _service.GetChanels(Id);
-            ViewBag.Server = _service.GetServerById(Id);
-            
-            return View("Index");
-        }
-        public IActionResult Server(int Id)
-        {
-            var userId = GetUserId();
-            ViewBag.Servers = _service.GetUserServers(userId);
-            ViewBag.Chanels = _service.GetChanels(Id);
-            ViewBag.Server = _service.GetServerById(Id);
-            
-            return View("Index");
-        }
         public IActionResult AddChanel(int Id)
         {
             ViewBag.Id = Id;
