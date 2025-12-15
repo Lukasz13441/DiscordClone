@@ -17,11 +17,12 @@ namespace DiscordClone.Models
         // Navigation
 
         public virtual ApplicationUser User { get; set; }
-
         public virtual ICollection<Server> Server { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Friendship> Friendships { get; set; }
         public virtual ICollection<ServerMember> ServerMembers { get; set; }
+
+        public virtual List<MessageReaction> Reactions { get; set; } = new();
     }
 
 }

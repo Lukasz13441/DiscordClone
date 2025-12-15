@@ -1,12 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-<aside class="discord-friends-panel">
+﻿<aside class="discord-friends-panel">
 
     <!-- HEADER -->
     <div class="friends-header">
-        <h2>Friends</h2>
+        <h2>Friends 
+            <a asp-action="AddFriend" asp-controller="Discord" class="btn btn-sm btn-primary w-100">
+                 Dodaj przyjaciela
+            </a>
+       </h2>
     </div>
 
     <!-- NAV / TABS LIKE DISCORD -->
@@ -14,7 +14,6 @@
         <div class="tab active">Online</div>
         <div class="tab">All</div>
         <div class="tab">Pending</div>
-        <div class="tab add-friend">Add Friend</div>
     </div>
 
     <!-- SEARCH -->
@@ -23,54 +22,18 @@
     </div>
 
     <!-- FRIEND LIST -->
-    <ul class="friend-list">
+    
+    @if (ViewBag.AddFriends == null)
+    {
+        <partial name="FriendsList" />
+    }
+    else
+    {
+        <partial name="ManageFriends" />
+    }
 
-        <!-- Friend Row -->
-        <li class="friend-row">
-            <img src="https://i.pravatar.cc/40?img=7" class="avatar">
 
-            <div class="friend-info">
-                <div class="friend-name">Alice</div>
-                <div class="friend-status online">Online</div>
-            </div>
+       
 
-            <div class="friend-actions">
-                <i class="fa-solid fa-message"></i>
-                <i class="fa-solid fa-phone"></i>
-                <i class="fa-solid fa-ellipsis"></i>
-            </div>
-        </li>
-
-        <li class="friend-row">
-            <img src="https://i.pravatar.cc/40?img=5" class="avatar">
-
-            <div class="friend-info">
-                <div class="friend-name">Bob</div>
-                <div class="friend-status idle">Idle</div>
-            </div>
-
-            <div class="friend-actions">
-                <i class="fa-solid fa-message"></i>
-                <i class="fa-solid fa-phone"></i>
-                <i class="fa-solid fa-ellipsis"></i>
-            </div>
-        </li>
-
-        <li class="friend-row">
-            <img src="https://i.pravatar.cc/40?img=9" class="avatar">
-
-            <div class="friend-info">
-                <div class="friend-name">Charlie</div>
-                <div class="friend-status dnd">Do Not Disturb</div>
-            </div>
-
-            <div class="friend-actions">
-                <i class="fa-solid fa-message"></i>
-                <i class="fa-solid fa-phone"></i>
-                <i class="fa-solid fa-ellipsis"></i>
-            </div>
-        </li>
-
-    </ul>
 
 </aside>

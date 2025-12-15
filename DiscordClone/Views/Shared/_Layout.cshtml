@@ -7,7 +7,7 @@
 
     <!-- Bootstrap i podstawowe style -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/DarkTheme.css" />
+    <link rel="stylesheet" href="~/css/DarkTheme.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DiscordClone.styles.css" asp-append-version="true" />
 
@@ -18,74 +18,10 @@
         <link rel="stylesheet" href="~/css/discord-messages.css" />
     }
 </head>
-@* <partial name="_LoginPartial" />
-@RenderBody() *@
 <body>
     @if (User.IsInRole("Member"))
     {
-        <!-- SIDE NAVIGATION -->
-    @*    <nav class="bg-dark d-flex flex-column align-items-center py-3" style="width:70px;">
-        <a asp-controller="Discord" asp-action="Index" class="mb-3">
-            <img src="~/images/profile4.png" class="rounded-circle img-fluid" style="width:50px; height:50px;" />
-        </a>
 
-        @foreach (var server in ViewBag.Servers)
-        {
-            <a asp-controller="Discord" asp-action="Server" asp-route-id="@server.Id" class="mb-2">
-                <img src="@server.IconURL" class="rounded-circle img-fluid border" 
-                     alt="@server.Name" style="width:50px; height:50px;" />
-            </a>
-        }
-
-        <a asp-controller="Discord" asp-action="CreateNewServer" 
-           class="btn btn-outline-light rounded-circle mt-auto" style="width:50px; height:50px; font-size:24px;">
-            +
-        </a>
-    </nav> 
-
-    <!-- ŚRODEK — lista kanałów / znajomych -->
-    <aside class="text-light p-3" style="width:250px; background:#202225;">
-        <ul class="list-unstyled">
-
-            @if (ViewBag.Server == null)
-            {
-                <li class="mb-2">
-                    <a asp-action="ManageFriends" asp-controller="Discord" class="btn btn-sm btn-primary w-100">
-                        Dodaj przyjaciela
-                    </a>
-                </li>
-
-                @foreach (var friend in ViewBag.Friends)
-                {
-                    <li class="d-flex align-items-center mb-2">
-                        <img src="@friend.AvatarURL" class="rounded-circle me-2" width="32" height="32" />
-                        @friend.Username
-                    </li>
-                }
-            }
-            else
-            {
-                <h5 class="mb-3 fw-bold">@ViewBag.Server.Name</h5>
-
-                @foreach (var channel in ViewBag.Chanels)
-                {
-                    <li class="p-2 mb-1 rounded bg-secondary">@channel.Name</li>
-                }
-
-                <li class="mt-2">
-                    <a asp-route-id="@ViewBag.Server.Id" asp-action="AddChanel" class="btn btn-sm btn-success w-100">
-                        Dodaj kanał +
-                    </a>
-                </li>
-            }
-
-            <li class="mt-4">
-                <partial name="_LoginPartial" />
-            </li>
-        </ul>
-    </aside>
-*@
-    <!-- GŁÓWNA ZAWARTOŚĆ -->
      <main style="background:#36393f;">
         @RenderBody()
     </main> 

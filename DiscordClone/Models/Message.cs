@@ -14,6 +14,8 @@ namespace DiscordClone.Models
         // Navigation
         public virtual UserProfile User { get; set; }
         public virtual Channel Channel { get; set; }
+
+        public virtual List<MessageReaction> Reactions { get; set; } = new();
     }
 
 }

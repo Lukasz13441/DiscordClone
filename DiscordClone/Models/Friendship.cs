@@ -15,14 +15,14 @@ namespace DiscordClone.Models
 
         // Navigation
         public virtual UserProfile User { get; set; }
-
         public virtual ICollection<Channel> Channel { get; set; }
     }
     public enum Status
     {
         Pending,
         Accepted,
-        Blocked
+        Blocked,
+        Chating
     }
 
 }
