@@ -19,8 +19,9 @@ namespace DiscordClone.Data
         public DbSet<ServerMember> ServerMembers { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<VoiceChannel> VoiceChannels { get; set; }
-        public DbSet<MessageReaction> Reactions { get; set; } = null!;
 
+        // FIXED: Changed from "Reactions" to "MessageReactions" and removed the duplicate object line
+        public DbSet<MessageReaction> MessageReactions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -95,8 +96,6 @@ namespace DiscordClone.Data
                       .WithMany(u => u.Friendships)
                       .HasForeignKey(x => x.FriendId)
                       .OnDelete(DeleteBehavior.Cascade);
-
-
             });
 
             modelBuilder.Entity<Server>(entity =>

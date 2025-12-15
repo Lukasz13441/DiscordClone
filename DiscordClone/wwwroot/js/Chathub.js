@@ -187,6 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
+        return;
+    }
+
+    // B. Kliknięcie w konkretną emotkę w menu (Wyślij do serwera)
+    if (e.target.classList.contains('reaction-option')) {
+        const reactionKey = e.target.getAttribute('data-reaction-key'); // np. "1", "2"
 
         // 2. WYBÓR REAKCJI (Wysyłanie ID do serwera)
         if (e.target.classList.contains('reaction-option')) {
@@ -265,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
+        const userId = userIdInput.value;
 
         // 5. Kliknięcie w tło - zamyka wszystkie pickery
         if (!e.target.closest('.reaction-picker') && !e.target.closest('.add-reaction-btn')) {
@@ -272,5 +279,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 p.style.display = 'none';
             });
         }
-    });
+        return;
+    }
+
+    // C. Kliknięcie gdziekolwiek indziej (Zamknij wszystkie pickery)
+    if (!e.target.closest('.reaction-picker') && !e.target.closest('.add-reaction-btn')) {
+        document.querySelectorAll('.reaction-picker').forEach(p => {
+            p.style.display = 'none';
+        });
+    }
 });
