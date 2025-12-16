@@ -1,0 +1,109 @@
+
+
+<style>
+    .reaction-picker {
+        display: none; /* Hidden by default */
+        flex-direction: row;
+        gap: 5px;
+        padding: 5px;
+        background: #2c2f33;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 1000;
+    }
+
+        .reaction-picker[style*="display: flex"] {
+            display: flex !important;
+        }
+
+    .reaction-option {
+        cursor: pointer;
+        font-size: 20px;
+        padding: 5px;
+    }
+
+        .reaction-option:hover {
+            background: #40444b;
+            border-radius: 3px;
+        }
+</style>
+
+
+<div class="chat-container">
+    <div id="messagesList" class="messages-area">
+        @foreach (var msg in ViewBag.Messages)
+        {
+            <div class="message-row" data-message-id="@msg.Id">
+                <img src="@msg.User.AvatarURL" class="avatar" />
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="username">@msg.User.Username</span>
+                        <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
+                    </div>
+                    <div class="message-text">@msg.Value</div>
+
+                    <!-- Kontener na reakcje -->
+                    <div class="message-reactions">
+                        @foreach (var reaction in msg.Reactions)
+                        {
+                            var count = reaction.Count;
+                            if (count > 0)
+                            {
+                                // Mapowanie klucza reakcji na emoji (MUST MATCH JavaScript REACTION_MAP)
+                                var emojiDisplay = reaction.Emoji switch
+                                {
+                                    "1" => "👍",
+                                    "2" => "❤️",
+                                    "3" => "😂",
+                                    "4" => "🔥",
+                                    "5" => "😎",
+                                    _ => reaction.Emoji
+                                };
+                                <div class="reaction" data-reaction-key="@reaction.Emoji">
+                                    @emojiDisplay <span class="count">@count</span>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <!-- Przycisk dodawania reakcji -->
+                    <div class="add-reaction-btn">➕</div>
+
+                    <!-- Akcje (edycja/usuwanie) -->
+                    <div class="message-actions">
+                        <span class="action-button edit-message-btn">✏️</span>
+                        <span class="action-button delete-message-btn">🗑️</span>
+                    </div>
+
+                    <!-- Menu wyboru reakcji (MUST USE data-reaction-key) -->
+                    <div class="reaction-picker" style="display:none;">
+                        <span class="reaction-option" data-reaction-key="1">👍</span>
+                        <span class="reaction-option" data-reaction-key="2">❤️</span>
+                        <span class="reaction-option" data-reaction-key="3">😂</span>
+                        <span class="reaction-option" data-reaction-key="4">🔥</span>
+                        <span class="reaction-option" data-reaction-key="5">😎</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="chat-input-area">
+        <input hidden id="channelId" value="@ViewBag.Id" />
+        <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
+        <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
+        <input type="text" id="messageInput" class="chat-input" placeholder="Wiadomość" />
+        <script>
+            document.getElementById("messageInput").addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); // Zapobiega domyślnemu zachowaniu (nowa linia)
+                    document.getElementById("sendBtn").click(); // Symuluje kliknięcie przycisku Wyślij
+                }
+						});
+		</script>
+        <button id="sendBtn" class="chat-send-btn">Wyślij</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="~/js/Chathub.js" asp-append-version="true"></script>

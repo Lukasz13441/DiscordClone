@@ -1,0 +1,152 @@
+﻿@model DiscordClone.Models.Channel
+
+<style>
+    /* Page background */
+    .create-channel-container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #2b2d31;
+        color: #f2f3f5;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    /* Main box */
+    .create-channel-box {
+        background: #313338;
+        padding: 30px;
+        width: 420px;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: #b5bac1;
+        margin-bottom: 20px;
+    }
+
+    /* Input label */
+    .input-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #b5bac1;
+    }
+
+    /* Input wrapper */
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+        background: #1e1f22;
+        border: 1px solid #3f4147;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+        .input-wrapper:hover {
+            border-color: #4f5258;
+        }
+
+    /* Hashtag icon */
+    .hashtag {
+        color: #b5bac1;
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    /* Channel input */
+    .channel-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #fff;
+        outline: none;
+        font-size: 16px;
+        background-color: #1e1f22;
+    }
+
+        .channel-input::placeholder {
+            color: #6d6f78;
+        }
+
+    /* Buttons */
+    .button-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .cancel-btn,
+    .create-btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.15s;
+    }
+
+    /* Cancel Button */
+    .cancel-btn {
+        background: transparent;
+        color: #b5bac1;
+    }
+
+        .cancel-btn:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+    /* Create Button */
+    .create-btn {
+        background: #5865f2;
+        border: none;
+        color: #fff;
+    }
+
+        .create-btn:hover {
+            background: #4752c4;
+        }
+</style>
+
+
+<div class="create-channel-container">
+
+    <div class="create-channel-box">
+
+        <h2 class="title">Create Channel</h2>
+        <p class="subtitle">Enter a channel name to create a new text channel.</p>
+
+        <form asp-action="AddChanelForm" class="channel-form">
+
+            <input hidden type="number" asp-for="ServerId" value="@ViewBag.Id" />
+
+            <!-- Channel Name -->
+            <label class="input-label">Channel Name</label>
+            <div class="input-wrapper">
+                <span class="hashtag">#</span>
+                <input asp-for="Name" class="channel-input" placeholder="new-channel" autocomplete="off" />
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-row">
+                <a asp-action="Server" asp-route-id="@ViewBag.Id" class="cancel-btn">Cancel</a>
+                <button type="submit" class="create-btn">Create Channel</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>

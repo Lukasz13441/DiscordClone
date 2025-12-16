@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends - Discord Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #36393f;
+            color: #dcddde;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .friends-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #36393f;
+        }
+
+        /* Header */
+        .friends-header2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #202225;
+            background: #2f3136;
+            box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
+        }
+
+            .friends-header h2 {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #fff;
+            }
+
+                .friends-header h2::before {
+                    content: "";
+                    display: inline-block;
+                    width: 24px;
+                    height: 24px;
+                    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23b9bbbe"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z"/></svg>') no-repeat center;
+                    background-size: contain;
+                }
+
+        .btn-add-friend {
+            background: #5865f2;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.17s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-add-friend:hover {
+                background: #4752c4;
+            }
+
+        /* Tabs */
+        .friends-tabs {
+            display: flex;
+            gap: 32px;
+            padding: 16px 30px;
+            border-bottom: 1px solid #202225;
+            background: #36393f;
+        }
+
+        .tab {
+            position: relative;
+            padding: 2px 8px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #96989d;
+            cursor: pointer;
+            transition: color 0.17s ease;
+            user-select: none;
+        }
+
+            .tab:hover {
+                color: #dcddde;
+            }
+
+            .tab.active {
+                color: #fff;
+            }
+
+                .tab.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -17px;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: #fff;
+                    border-radius: 2px 2px 0 0;
+                }
+
+        /* Search */
+        .friends-search {
+            padding: 16px 30px;
+            background: #36393f;
+        }
+
+            .friends-search input {
+                width: 100%;
+                max-width: 400px;
+                background: #202225;
+                border: none;
+                border-radius: 4px;
+                padding: 8px 12px;
+                color: #dcddde;
+                font-size: 14px;
+                outline: none;
+                transition: background 0.17s ease;
+            }
+
+                .friends-search input::placeholder {
+                    color: #6d6f78;
+                }
+
+                .friends-search input:focus {
+                    background: #1e1f22;
+                }
+
+        /* Friends List */
+        .friends-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 30px 20px;
+        }
+
+            .friends-list::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .friends-list::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .friends-list::-webkit-scrollbar-thumb {
+                background: #202225;
+                border-radius: 4px;
+            }
+
+                .friends-list::-webkit-scrollbar-thumb:hover {
+                    background: #2f3136;
+                }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #96989d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 8px;
+        }
+
+        .friend-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 10px;
+            border-radius: 8px;
+            border-top: 1px solid #3f4147;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+            .friend-row:hover {
+                background: #3a3c43;
+                border-color: transparent;
+            }
+
+                .friend-row:hover + .friend-row {
+                    border-color: transparent;
+                }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 3px solid #36393f;
+            box-sizing: content-box;
+        }
+
+            .status-indicator.online {
+                background: #23a559;
+            }
+
+            .status-indicator.idle {
+                background: #f0b232;
+            }
+
+            .status-indicator.dnd {
+                background: #f23f43;
+            }
+
+            .status-indicator.offline {
+                background: #80848e;
+            }
+
+        .friend-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .friend-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .friend-status {
+            font-size: 13px;
+            color: #b5bac1;
+        }
+
+            .friend-status.online {
+                color: #23a559;
+            }
+
+            .friend-status.idle {
+                color: #f0b232;
+            }
+
+            .friend-status.dnd {
+                color: #f23f43;
+            }
+
+        /* Friend Actions */
+        .friend-actions {
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .friend-row:hover .friend-actions {
+            opacity: 1;
+        }
+
+        .friend-actions i {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: #2f3136;
+            border-radius: 50%;
+            color: #b5bac1;
+            cursor: pointer;
+            transition: background 0.17s ease, color 0.17s ease;
+        }
+
+            .friend-actions i:hover {
+                background: #36393f;
+                color: #dcddde;
+            }
+
+            .friend-actions i.fa-message:hover {
+                color: #5865f2;
+            }
+
+            .friend-actions i.fa-phone:hover {
+                color: #23a559;
+            }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+            .empty-state img {
+                width: 280px;
+                margin-bottom: 40px;
+                opacity: 0.3;
+            }
+
+            .empty-state h3 {
+                color: #b5bac1;
+                font-size: 16px;
+                font-weight: 400;
+            }
+    </style>
+</head>
+<body>
+    <div class="friends-container">
+        <!-- Header -->
+        <div class="friends-header2">
+            <h2>
+                Friends
+            </h2>
+            <a href="/Discord/AddFriend" class="btn-add-friend">
+                Add Friend
+            </a>
+        </div>
+
+        <!-- Tabs -->
+        <div class="friends-tabs">
+            <div class="tab active">Online</div>
+            <div class="tab">All</div>
+            <div class="tab">Pending</div>
+            <div class="tab">Blocked</div>
+        </div>
+
+        <!-- Search -->
+        <div class="friends-search">
+            <input type="text" placeholder="Search" />
+        </div>
+
+        <!-- Friends List -->
+        <div class="friends-list">
+            <div class="section-title">Online — 3</div>
+
+            <div class="friend-row">
+                <div class="avatar-wrapper">
+                    <img src="https://i.pravatar.cc/40?img=7" class="avatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="friend-info">
+                    <div class="friend-name">Alice</div>
+                    <div class="friend-status online">Online</div>
+                </div>
+                <div class="friend-actions">
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+
+            <div class="friend-row">
+                <div class="avatar-wrapper">
+                    <img src="https://i.pravatar.cc/40?img=5" class="avatar">
+                    <span class="status-indicator idle"></span>
+                </div>
+                <div class="friend-info">
+                    <div class="friend-name">Bob</div>
+                    <div class="friend-status idle">Idle</div>
+                </div>
+                <div class="friend-actions">
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+
+            <div class="friend-row">
+                <div class="avatar-wrapper">
+                    <img src="https://i.pravatar.cc/40?img=9" class="avatar">
+                    <span class="status-indicator dnd"></span>
+                </div>
+                <div class="friend-info">
+                    <div class="friend-name">Charlie</div>
+                    <div class="friend-status dnd">Do Not Disturb</div>
+                </div>
+                <div class="friend-actions">
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+
+            <div class="friend-row">
+                <div class="avatar-wrapper">
+                    <img src="https://i.pravatar.cc/40?img=12" class="avatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="friend-info">
+                    <div class="friend-name">Diana</div>
+                    <div class="friend-status online">Online</div>
+                </div>
+                <div class="friend-actions">
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+
+            <div class="friend-row">
+                <div class="avatar-wrapper">
+                    <img src="https://i.pravatar.cc/40?img=3" class="avatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="friend-info">
+                    <div class="friend-name">Edward</div>
+                    <div class="friend-status online">Playing Discord Clone</div>
+                </div>
+                <div class="friend-actions">
+                    <i class="fa-solid fa-message"></i>
+                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.friends-search input');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const friendRows = document.querySelectorAll('.friend-row');
+
+            friendRows.forEach(row => {
+                const friendName = row.querySelector('.friend-name').textContent.toLowerCase();
+                if (friendName.includes(searchTerm)) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

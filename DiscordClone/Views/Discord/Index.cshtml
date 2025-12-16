@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord – Chat</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/style-index-discord.css" asp-append-version="true"/>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="discord-layout">
+        <!-- ===== LEFT: SERVERS LIST ===== -->
+        <partial name="Servers" />
+        
+        @if(ViewBag.Server != null)
+        { 
+            <!-- ===== MIDDLE: CHANNEL LIST / FRIENDS ===== -->
+           <partial name="Channels" />
+            <partial name="SendMessage" />
+
+        }else if (ViewBag.Messages != null)
+        {
+            <partial name="FriendsChats" />
+            <partial name="SendMessage" />
+        }
+        else
+        { 
+            <!-- ===== RIGHT: MAIN AREA ===== -->
+            <partial name="FriendsChats" />
+            <partial name="IndexFriendsList" />
+        }
+        
+    </div>
+</body>
+</html>

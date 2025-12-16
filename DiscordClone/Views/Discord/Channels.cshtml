@@ -1,0 +1,318 @@
+﻿<!-- CHANNEL SIDEBAR HTML -->
+<aside class="channel-sidebar">
+    <!-- Server Header -->
+    <div class="server-header">
+        <h4 class="server-title">@ViewBag.Server.Name</h4>
+        <a asp-controller="Discord"
+           asp-action="ManageServers"
+           asp-route-id="@ViewBag.Server.Id"
+           class="server-settings-btn"
+           title="Server Settings">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+    </div>
+
+    <!-- Channel List -->
+    <ul class="channel-list">
+        @foreach (var channel in ViewBag.Chanels)
+        {
+            <li class="channel-item">
+                <a asp-route-id="@channel.Id"
+                   asp-action="SendMessage"
+                   class="channel-link">
+                    <i class="fa-solid fa-hashtag channel-icon"></i>
+                    <span class="channel-name">@channel.Name</span>
+                </a>
+            </li>
+        }
+
+        <!-- Add Channel Button -->
+        <li class="add-channel">
+            <a asp-route-id="@ViewBag.Server.Id"
+               asp-action="AddChanel"
+               class="add-channel-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Channel</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Mini Profile -->
+    <partial name="mini-profile" />
+</aside>
+
+<!-- ============================================ -->
+<!-- CSS STYLES - Add this to your main CSS file -->
+<!-- ============================================ -->
+<style>
+    /* =============================== */
+    /*   DISCORD CHANNEL SIDEBAR       */
+    /* =============================== */
+
+    .channel-sidebar {
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
+        background: #2b2d31;
+        color: #f2f3f5;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #1e1f22;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Server Header */
+    .server-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 8px;
+        border-bottom: 1px solid #1e1f22;
+        min-height: 48px;
+        box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2);
+    }
+
+    .server-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #f2f3f5;
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex: 1;
+        padding-right: 8px;
+    }
+
+    .server-settings-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        border-radius: 4px;
+        color: #b5bac1;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+    }
+
+        .server-settings-btn:hover {
+            background: #35373c;
+            color: #f2f3f5;
+        }
+
+        .server-settings-btn i {
+            font-size: 16px;
+        }
+
+    /* Channel List */
+    .channel-list {
+        list-style: none;
+        padding: 8px;
+        margin: 0;
+        flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+        .channel-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .channel-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .channel-list::-webkit-scrollbar-thumb {
+            background: #1a1b1e;
+            border-radius: 4px;
+        }
+
+            .channel-list::-webkit-scrollbar-thumb:hover {
+                background: #1e1f22;
+            }
+
+    /* Channel Entry */
+    .channel-item {
+        margin-bottom: 2px;
+    }
+
+    .channel-link {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 4px;
+        color: #949ba4;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        min-height: 32px;
+    }
+
+        .channel-link:hover {
+            background: #35373c;
+            color: #dbdee1;
+        }
+
+        .channel-link.active {
+            background: #404249;
+            color: #ffffff;
+        }
+
+            .channel-link.active .channel-icon {
+                color: #ffffff;
+            }
+
+    /* # Icon */
+    .channel-icon {
+        margin-right: 6px;
+        font-size: 20px;
+        color: #80848e;
+        flex-shrink: 0;
+        width: 20px;
+        text-align: center;
+    }
+
+    .channel-name {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /* Add Channel Button */
+    .add-channel {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #1e1f22;
+    }
+
+    .add-channel-btn {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #949ba4;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        min-height: 32px;
+        gap: 6px;
+    }
+
+        .add-channel-btn:hover {
+            background: #35373c;
+            color: #dbdee1;
+        }
+
+        .add-channel-btn i {
+            font-size: 16px;
+        }
+
+    /* =============================== */
+    /*   MINI PROFILE COMPONENT        */
+    /* =============================== */
+
+    .mini-profile {
+        padding: 8px;
+        background: #232428;
+        border-top: 1px solid #1e1f22;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 52px;
+        flex-shrink: 0;
+    }
+
+    .mini-profile-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        background: #5865f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: #fff;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+        .mini-profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    /* Status Indicator for Mini Profile */
+    .mini-profile-status-indicator {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #232428;
+        background: #23a55a;
+    }
+
+    .mini-profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mini-profile-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #f2f3f5;
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .mini-profile-status-text {
+        font-size: 12px;
+        color: #80848e;
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .mini-profile-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .mini-profile-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: transparent;
+        border: none;
+        color: #b5bac1;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .mini-profile-btn:hover {
+            background: #35373c;
+            color: #f2f3f5;
+        }
+
+        .mini-profile-btn i {
+            font-size: 16px;
+        }
+</style>

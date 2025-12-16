@@ -1,0 +1,19 @@
+﻿<aside class="discord-friends-panel">
+
+    <!-- HEADER -->
+
+
+    <!-- FRIEND LIST -->
+    
+    @if (ViewBag.AddFriends == null)
+    {
+        <partial name="FriendsList" />
+    }
+    else
+    {
+        <partial name="ManageFriends" />
+    }
+
+
+
+</aside>

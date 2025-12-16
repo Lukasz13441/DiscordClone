@@ -1,0 +1,337 @@
+﻿<!-- FRIENDS SIDEBAR HTML -->
+<aside class="friends-sidebar">
+    <!-- Friends Header -->
+    <div class="friends-header">
+        <a asp-action="Index" asp-controller="Discord" class="friends-header-btn">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Znajomi</span>
+        </a>
+    </div>
+
+    <!-- Direct Messages Section -->
+    <p class="friends-section-title">Prywatne Wiadomości</p>
+
+    <ul class="dm-list">
+        @foreach (var friend in ViewBag.Friends)
+        {
+            <li class="dm-item">
+                <a asp-action="ChatWithId" asp-route-id="@friend.Id" class="dm-link">
+                    <div class="dm-avatar">
+                        @if (!string.IsNullOrEmpty(friend.AvatarURL))
+                        {
+                            <img src="@friend.AvatarURL" alt="@friend.Username" />
+                        }
+                        else
+                        {
+                            @friend.Username.Substring(0, 1).ToUpper()
+                        }
+                        <span class="dm-status online"></span>
+                    </div>
+                    <span class="dm-name">@friend.Username</span>
+                </a>
+            </li>
+        }
+    </ul>
+
+    <!-- Login Partial (if needed) -->
+    <div class="friends-login-section">
+        <partial name="_LoginPartial" />
+    </div>
+
+    <!-- Mini Profile -->
+    <partial name="mini-profile" />
+</aside>
+
+<!-- ============================================ -->
+<!-- CSS STYLES - Add this to your main CSS file -->
+<!-- ============================================ -->
+<style>
+    /* =============================== */
+    /*   DISCORD FRIENDS SIDEBAR       */
+    /* =============================== */
+
+    .friends-sidebar {
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
+        background: #2b2d31;
+        color: #f2f3f5;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #1e1f22;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Friends Header */
+    .friends-header {
+        padding: 12px 8px;
+        border-bottom: 1px solid #1e1f22;
+        min-height: 48px;
+        box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2);
+    }
+
+    .friends-header-btn {
+        width: 100%;
+        padding: 6px 8px;
+        background: transparent;
+        border: none;
+        border-radius: 4px;
+        color: #f2f3f5;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+        .friends-header-btn:hover {
+            background: #35373c;
+            color: #fff;
+        }
+
+        .friends-header-btn i {
+            font-size: 20px;
+            color: #80848e;
+        }
+
+    /* Section Title */
+    .friends-section-title {
+        padding: 16px 12px 4px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #949ba4;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    /* Direct Messages List */
+    .dm-list {
+        list-style: none;
+        padding: 8px;
+        margin: 0;
+        flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+        .dm-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dm-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .dm-list::-webkit-scrollbar-thumb {
+            background: #1a1b1e;
+            border-radius: 4px;
+        }
+
+            .dm-list::-webkit-scrollbar-thumb:hover {
+                background: #1e1f22;
+            }
+
+    /* DM Item */
+    .dm-item {
+        margin-bottom: 2px;
+    }
+
+    .dm-link {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 4px;
+        color: #949ba4;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        gap: 12px;
+        min-height: 42px;
+    }
+
+        .dm-link:hover {
+            background: #35373c;
+            color: #dbdee1;
+        }
+
+        .dm-link.active {
+            background: #404249;
+            color: #ffffff;
+        }
+
+    /* DM Avatar */
+    .dm-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        background: #5865f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: #fff;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+        .dm-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    /* Status Indicator */
+    .dm-status {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #2b2d31;
+    }
+
+        .dm-status.online {
+            background: #23a55a;
+        }
+
+        .dm-status.idle {
+            background: #f0b232;
+        }
+
+        .dm-status.dnd {
+            background: #f23f42;
+        }
+
+        .dm-status.offline {
+            background: #80848e;
+        }
+
+    /* DM Name */
+    .dm-name {
+        flex: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /* Login Section */
+    .friends-login-section {
+        padding: 8px 12px;
+        border-top: 1px solid #1e1f22;
+        background: #232428;
+    }
+
+    /* =============================== */
+    /*   MINI PROFILE COMPONENT        */
+    /* =============================== */
+
+    .mini-profile {
+        padding: 8px;
+        background: #232428;
+        border-top: 1px solid #1e1f22;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 52px;
+        flex-shrink: 0;
+    }
+
+    .mini-profile-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        background: #5865f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: #fff;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+        .mini-profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    /* Status Indicator for Mini Profile */
+    .mini-profile-status-indicator {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #232428;
+        background: #23a55a;
+    }
+
+    .mini-profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mini-profile-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #f2f3f5;
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .mini-profile-status-text {
+        font-size: 12px;
+        color: #80848e;
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .mini-profile-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .mini-profile-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: transparent;
+        border: none;
+        color: #b5bac1;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .mini-profile-btn:hover {
+            background: #35373c;
+            color: #f2f3f5;
+        }
+
+        .mini-profile-btn i {
+            font-size: 16px;
+        }
+</style>

@@ -1,0 +1,135 @@
+﻿@model DiscordClone.Models.Server
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/create-new-server.css" />
+
+<style>
+    body { background:#2f3136; color:white; font-family:Arial, sans-serif; }
+    .discord-layout {
+            display:flex; height:100vh;
+        }
+
+    .main-area {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .create-server-modal {
+        background:#202225;
+        padding:35px 45px;
+        border-radius:12px;
+        width:450px;
+        box-shadow:0 0 25px rgba(0,0,0,.6);
+        text-align:center;
+        animation:fadeIn .4s ease;
+    }
+
+    .create-server-modal h2 { font-weight:bold; margin-bottom:10px; }
+    .subtitle { opacity:.8; font-size:15px; margin-bottom:25px; }
+
+    .upload-circle {
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        background:#3c3e44;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        gap:6px;
+        font-size:14px;
+        cursor:pointer;
+        transition:.2s;
+        margin:auto;
+    }
+    .upload-circle:hover { background:#5865f2; transform:scale(1.05); }
+
+    .upload-circle i { font-size:22px; }
+
+    .input-group {
+        text-align:left;
+        margin-top:20px;
+    }
+    .input-group label { font-size:14px; opacity:.9; }
+    .input-group input {
+        width:100%;
+        padding:10px 12px;
+        border-radius:6px;
+        border:none;
+        margin-top:6px;
+        background:#3c3e44;
+        color:white;
+    }
+    .input-group input:focus {
+        outline:2px solid #5865f2;
+        background:#45474d;
+    }
+
+    .buttons {
+        display:flex;
+        justify-content:flex-end;
+        gap:12px;
+        margin-top:30px;
+    }
+
+    .cancel-btn, .create-btn {
+        padding:10px 18px;
+        border-radius:6px;
+        text-decoration:none;
+        font-weight:600;
+    }
+
+    .cancel-btn {
+        background:#4a4c51;
+        color:white;
+    }
+    .cancel-btn:hover { background:#5b5e63; }
+
+    .create-btn {
+        background:#5865f2;
+        border:none;
+        color:white;
+    }
+    .create-btn:hover { background:#4752c4; }
+
+    /* keyframes fadeIn {
+        from {opacity:0; transform:scale(.94);}
+        to {opacity:1; transform:scale(1);}
+    } */
+</style>
+
+
+<div class="container-fluid main-area">      
+
+    <div class="create-server-modal">
+
+        <form asp-action="CreateNewServerForm" asp-controller="Discord" enctype="multipart/form-data">
+
+            <h2>Create a Server</h2>
+            <p class="subtitle">Your server is where your community hangs out.</p>
+
+            <!-- ICON UPLOAD -->
+            <label for="icon">
+                <div class="upload-circle mt-2">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>Upload Icon</span>
+                </div>
+            </label>
+            <input type="file" id="icon" name="ServerIcon" hidden />
+
+            <!-- SERVER NAME -->
+            <div class="input-group">
+                <label>Server Name</label>
+                <input type="text" asp-for="Name" placeholder="Enter server name" required />
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="buttons">
+                <a asp-action="Index" class="cancel-btn">Cancel</a>
+                <button type="submit" class="create-btn">Create</button>
+            </div>
+
+        </form>
+    </div>
+</div>
