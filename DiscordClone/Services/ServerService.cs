@@ -47,6 +47,13 @@ namespace DiscordClone.Services
                 .OrderByDescending(s => s.CreatedAt)
                 .FirstOrDefault();
 
+            _context.ServerMembers.Add(new ServerMember
+            {
+                UserId = UserId,
+                ServerId = Server.Id,
+                Range = Models.Range.Owner
+            });
+            _context.SaveChanges();
             _ChannelService.CreateDefaultChannel(Server.Id);
         }
 
@@ -60,15 +67,6 @@ namespace DiscordClone.Services
             return Server;
         }
 
-        public void JoinServer(int UserId, int ServerId)
-        {
-            _context.ServerMembers.Add(new ServerMember
-            {
-                UserId = UserId,
-                ServerId = ServerId
-            });
-            _context.SaveChanges();
-        }
 
         public async Task UpdateServerAsync(ServerViewModel model)
         {
