@@ -131,6 +131,22 @@ namespace DiscordClone.Services
                 .ToList();
         }
 
+        public void AddMemberToServer(string userId, int serverId)
+        {
+            var UserId = _FriendsService.GetUserIntId(userId);
+            if (UserId == null) return;
+            var existingMember = _context.ServerMembers
+                .FirstOrDefault(sm => sm.ServerId == serverId && sm.UserId == UserId);
+            if (existingMember != null) return;
+            _context.ServerMembers.Add(new ServerMember
+            {
+                UserId = UserId,
+                ServerId = serverId,
+                Range = Models.Range.Member
+            });
+            _context.SaveChanges();
+        }
+
     }
 
 

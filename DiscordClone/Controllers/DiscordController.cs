@@ -222,6 +222,13 @@ namespace DiscordClone.Controllers
             return messages;
         }
 
+        public IActionResult joinServer(int Id)
+        {
+            var userId = GetUserId();
+            _ServerService.AddMemberToServer(userId, Id);
+            return RedirectToAction("Index");
+        }
+
 
     }
 }

@@ -1,5 +1,5 @@
-﻿@model DiscordClone.Models.ServerViewModel
-<link rel="stylesheet" href="./css/DarkTheme.css" />
+﻿@model DiscordClone.Models.ServerViewModel 
+<link rel="stylesheet" href="./css/DarkTheme.css"/>
 <style>
     .server-settings-container {
         display: flex;
@@ -8,15 +8,13 @@
         color: #fff;
         padding: 0;
     }
-
-    .profile-avatar {
+     .profile-avatar {
         width: 110px;
         height: 110px;
         border-radius: 50%;
         border: 4px solid #18191c;
         margin-right: 20px;
     }
-
     .upload-btn {
         background: #5865F2;
         padding: 10px 14px;
@@ -142,38 +140,38 @@
 
         @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
         {
+            
+        
+        <!-- GENERAL -->
+        <form id="section-general" class="settings-section active" asp-action="ManageServersForm" method="post" enctype="multipart/form-data">
+            <h3>General Settings</h3>
+            <p>Server link : https://localhost:7237/Discord/joinServer?Id=@ViewBag.Server.Id</p>
 
+            <input type="hidden" hidden value="@ViewBag.Server.Id"  asp-for="Id"/>
+             <div class="avatar-section">
+                <img src="@ViewBag.Server.IconURL" id="avatarPreview" class="profile-avatar" />
+                 <label class="upload-btn">
+                    Change Avatar
+                <input type="file" id="avatarInput" accept="image/*" asp-for="IconURL">
+                </label>
+             </div>
 
-            <!-- GENERAL -->
-            <form id="section-general" class="settings-section active" asp-action="ManageServersForm" method="post" enctype="multipart/form-data">
-                <h3>General Settings</h3>
-                <p>Server link : https://localhost:7237/Discord/joinServer?Id=@ViewBag.Server.Id</p>
+            <label>Server Name</label>
+            <input type="text" id="serverNameInput" value="@ViewBag.Server.Name" class="form-control" asp-for="Name">
 
-                <input type="hidden" hidden value="@ViewBag.Server.Id" asp-for="Id" />
-                <div class="avatar-section">
-                    <img src="@ViewBag.Server.IconURL" id="avatarPreview" class="profile-avatar" />
-                    <label class="upload-btn">
-                        Change Avatar
-                        <input type="file" id="avatarInput" accept="image/*" asp-for="IconURL">
-                    </label>
-                </div>
-
-                <label>Server Name</label>
-                <input type="text" id="serverNameInput" value="@ViewBag.Server.Name" class="form-control" asp-for="Name">
-
-                <button class="save-btn" id="saveServerName" type="submit">Save</button>
+            <button class="save-btn" id="saveServerName" type="submit">Save</button>
             </form>
         }
         else
         {
             <p>You dont have access</p>
         }
-        @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
+                @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
         {
             <!-- MEMBERS -->
             <div id="section-members" class="settings-section">
                 <h3>Server Members</h3>
-                @foreach (var member in ViewBag.Members)
+                @foreach(var member in ViewBag.Members)
                 {
                     @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
                     {
@@ -182,6 +180,7 @@
 
                 }
                 <div class="member-list">
+
                 </div>
             </div>
         }
@@ -197,6 +196,7 @@
                 <h3>Banned Users</h3>
 
                 <div class="ban-list">
+
                 </div>
             </div>
         }
