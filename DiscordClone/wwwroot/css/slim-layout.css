@@ -1,0 +1,28 @@
+﻿.slim-container {
+    max-width: 400px; /* keeps form slim */
+    margin: 50px auto; /* centers vertically and horizontally */
+    padding: 20px;
+    background: #fff; /* optional: white card look */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+    .slim-container h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .slim-container .form-control {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .slim-container .btn {
+        margin-top: 10px;
+    }
+
+    .slim-container .links {
+        margin-top: 15px;
+        font-size: 0.85rem;
+        text-align: center;
+    }

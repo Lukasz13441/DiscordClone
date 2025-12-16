@@ -1,0 +1,205 @@
+﻿@model DiscordClone.Models.ServerViewModel 
+<link rel="stylesheet" href="./css/DarkTheme.css"/>
+<style>
+    .server-settings-container {
+        display: flex;
+        height: 100vh;
+        background: #2f3136;
+        color: #fff;
+        padding: 0;
+    }
+     .profile-avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        border: 4px solid #18191c;
+        margin-right: 20px;
+    }
+    .upload-btn {
+        background: #5865F2;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    /* SIDEBAR */
+    .settings-sidebar {
+        width: 260px;
+        background: #202225;
+        padding: 20px;
+        border-right: 2px solid #18191c;
+    }
+
+    .sidebar-title {
+        margin-bottom: 25px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .sidebar-section h4 {
+        margin: 20px 0 10px;
+        font-size: 14px;
+        color: #b9bbbe;
+    }
+
+    .sidebar-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 8px;
+        background: #2f3136;
+        border: none;
+        text-align: left;
+        color: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+        .sidebar-btn:hover {
+            background: #36393f;
+        }
+
+        .sidebar-btn.active {
+            background: #5865F2;
+        }
+
+    /* CONTENT */
+    .settings-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    .settings-section {
+        display: none;
+    }
+
+        .settings-section.active {
+            display: block;
+        }
+
+    .avatar-small {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .member-row, .banned-row {
+        display: flex;
+        align-items: center;
+        background: #36393f;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    .member-name {
+        flex: 1;
+    }
+
+    .ban-btn, .unban-btn, .save-btn {
+        background: #ED4245;
+        border: none;
+        padding: 7px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .unban-btn {
+        background: #3ba55d;
+    }
+
+    .save-btn {
+        background: #5865F2;
+        margin-top: 15px;
+    }
+
+</style>
+<div class="server-settings-container">
+
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+        <h2 class="sidebar-title"></h2>
+
+        <div class="sidebar-section">
+            <h4>Server Settings</h4>
+            <button class="sidebar-btn active" data-section="general">General</button>
+            <button class="sidebar-btn" data-section="members">Members</button>
+            @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+            {
+                <button class="sidebar-btn" data-section="bans">Bans</button>
+            }
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="settings-content">
+
+        @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
+        {
+            
+        
+        <!-- GENERAL -->
+        <form id="section-general" class="settings-section active" asp-action="ManageServersForm" method="post" enctype="multipart/form-data">
+            <h3>General Settings</h3>
+            <p>Server link : https://localhost:7237/Discord/joinServer?Id=@ViewBag.Server.Id</p>
+
+            <input type="hidden" hidden value="@ViewBag.Server.Id"  asp-for="Id"/>
+             <div class="avatar-section">
+                <img src="@ViewBag.Server.IconURL" id="avatarPreview" class="profile-avatar" />
+                 <label class="upload-btn">
+                    Change Avatar
+                <input type="file" id="avatarInput" accept="image/*" asp-for="IconURL">
+                </label>
+             </div>
+
+            <label>Server Name</label>
+            <input type="text" id="serverNameInput" value="@ViewBag.Server.Name" class="form-control" asp-for="Name">
+
+            <button class="save-btn" id="saveServerName" type="submit">Save</button>
+            </form>
+        }
+        else
+        {
+            <p>You dont have access</p>
+        }
+                @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
+        {
+            <!-- MEMBERS -->
+            <div id="section-members" class="settings-section">
+                <h3>Server Members</h3>
+                @foreach(var member in ViewBag.Members)
+                {
+                    @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+                    {
+                        //ban button
+                    }
+
+                }
+                <div class="member-list">
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>You dont have access</p>
+        }
+
+        @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+        {
+            <!-- BANNED USERS -->
+            <div id="section-bans" class="settings-section">
+                <h3>Banned Users</h3>
+
+                <div class="ban-list">
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<a asp-controller="Discord" asp-action="Index" class="close-page-btn-fixed"><button id="closePageBtn" class="close-page-btn-fixed">✖</button></a>

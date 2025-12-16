@@ -1,0 +1,13 @@
+﻿
+<div class="discord-profile-bar">
+    <img src="@ViewBag.UserProfile.AvatarURL" class="profile-avatar">
+
+    <div class="profile-info">
+        <div class="profile-name">@ViewBag.UserProfile.Username </div>
+        <div class="profile-tag">@ViewBag.UserProfile.Username#@ViewBag.UserProfile.Tag</div>
+    </div>
+     <a asp-controller="Discord" asp-action="UserProfile">
+		<i class="fa-solid fa-gear settings-icon"></i>
+     </a>
+    
+</div>

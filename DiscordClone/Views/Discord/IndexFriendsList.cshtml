@@ -1,0 +1,39 @@
+﻿<aside class="discord-friends-panel">
+
+    <!-- HEADER -->
+    <div class="friends-header">
+        <h2>Friends 
+            <a asp-action="AddFriend" asp-controller="Discord" class="btn btn-sm btn-primary w-100">
+                 Dodaj przyjaciela
+            </a>
+       </h2>
+    </div>
+
+    <!-- NAV / TABS LIKE DISCORD -->
+    <div class="friends-tabs">
+        <div class="tab active">Online</div>
+        <div class="tab">All</div>
+        <div class="tab">Pending</div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="friends-search">
+        <input type="text" placeholder="Search friends" />
+    </div>
+
+    <!-- FRIEND LIST -->
+    
+    @if (ViewBag.AddFriends == null)
+    {
+        <partial name="FriendsList" />
+    }
+    else
+    {
+        <partial name="ManageFriends" />
+    }
+
+
+       
+
+
+</aside>

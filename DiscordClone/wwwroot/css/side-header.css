@@ -1,0 +1,37 @@
+﻿/* ====== SIDE NAV BAR ====== */
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #1a1b1d;
+    flex-wrap: wrap;
+    padding-left:0px;
+}
+.servers {
+    padding-top: 20px;
+    width: 20%;
+    height: 95vh;
+    background-color: #2f3136;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: center;
+}
+    .servers img{
+
+    }
+    }
+        }
+}
+
+}
+
+/* PUSH CONTENT RIGHT */
+    margin-left: 240px !important; /* same as side-nav width */
+}
+
+

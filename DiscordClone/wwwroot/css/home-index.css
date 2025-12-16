@@ -1,0 +1,72 @@
+﻿@media only screen and (max-width: 600px) {
+    .sidebar{
+        display: none;
+    }
+}
+
+.container {
+    margin-inline: auto;
+    margin-bottom: 60px;
+}
+
+.sidebar {
+    width: 240px;
+    display: flex;
+    padding: 20px 10px;
+    margin-bottom: 15px;
+    margin-left: 30px;
+    padding-bottom: 0px;
+}   
+
+    .sidebar a {
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        display: block;
+        color: var(--discord-text);
+        font-weight: 500;
+    }
+
+        .sidebar a:hover {
+            background-color: var(--discord-medium);
+            color: var(--discord-blurple);
+        }
+
+.main-content {
+    margin-inline: auto;
+    flex: 1;
+    overflow-y: auto;
+    width: 80%;
+}
+
+.card {
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--discord-blurple);
+    color: white;
+    border-radius: 10px;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+    .hero h1 {
+        margin: 0;
+        font-size: 2.2rem;
+    }
+
+    .hero button {
+        font-size: 1rem;
+    }
+.render-body {
+    background-color: #36393e;
+    border-radius: 30px;
+    margin-inline: auto;
+    width: 80%;
+}

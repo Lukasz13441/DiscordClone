@@ -1,0 +1,27 @@
+﻿<aside class="text-light p-3" style="width:250px; background:#202225;">
+        <ul class="list-unstyled">
+                <li class="mb-2">
+                    <a asp-action="Index" asp-controller="Discord" class="btn btn-sm btn-primary w-100">
+                         znajomi
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <p>prywatne Wiadomosci</p>
+                </li>
+                @foreach (var friend in ViewBag.Friends)
+                {
+                    <li class="d-flex align-items-center mb-2">
+                        <a asp-action="ChatWithId" asp-route-id="@friend.Id">
+                        <img src="@friend.AvatarURL" class="rounded-circle me-2" width="32" height="32" />
+                        @friend.Username
+                        </a>
+                    </li>
+                }
+
+            <li class="mt-4">
+                <partial name="_LoginPartial" />
+            </li>
+        </ul>
+	<partial name="mini-profile" />
+
+</aside>
