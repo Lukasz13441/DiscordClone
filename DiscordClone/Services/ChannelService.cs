@@ -201,6 +201,10 @@ namespace DiscordClone.Services
                     File.Delete(oldFilePath);
             }
 
+            if (file == null)
+            {
+                return "/images/default_avatar.png";
+            }
             // Generuj unikalną nazwę pliku
             string extension = Path.GetExtension(file.FileName);
             string fileName = $"{Guid.NewGuid()}{extension}";

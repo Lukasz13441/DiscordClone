@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiscordClone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251211123049_reactionFixed")]
-    partial class reactionFixed
+    [Migration("20251217141657_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,33 @@ namespace DiscordClone.Migrations
                     b.ToTable("Channel", (string)null);
                 });
 
+            modelBuilder.Entity("DiscordClone.Models.ChannelRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConnectionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("ChannelRoom", (string)null);
+                });
+
             modelBuilder.Entity("DiscordClone.Models.Friendship", b =>
                 {
                     b.Property<int>("Id")
@@ -73,6 +100,8 @@ namespace DiscordClone.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FriendId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Friendship", (string)null);
                 });
@@ -118,7 +147,7 @@ namespace DiscordClone.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Count")
+                    b.Property<int?>("Count")
                         .HasColumnType("int");
 
                     b.Property<string>("Emoji")
@@ -218,6 +247,12 @@ namespace DiscordClone.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Range")
+                        .HasColumnType("int");
+
                     b.Property<int>("ServerId")
                         .HasColumnType("int");
 
@@ -252,6 +287,9 @@ namespace DiscordClone.Migrations
                         .HasMaxLength(190)
                         .HasColumnType("nvarchar(190)");
 
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Tag")
                         .HasColumnType("int");
 
@@ -264,6 +302,9 @@ namespace DiscordClone.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("activityStatus")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
@@ -275,10 +316,7 @@ namespace DiscordClone.Migrations
             modelBuilder.Entity("DiscordClone.Models.VoiceChannel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -289,8 +327,6 @@ namespace DiscordClone.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("VoiceChannelId");
 
                     b.ToTable("VoiceChannel", (string)null);
                 });
@@ -530,12 +566,37 @@ namespace DiscordClone.Migrations
                     b.Navigation("Server");
                 });
 
+            modelBuilder.Entity("DiscordClone.Models.ChannelRoom", b =>
+                {
+                    b.HasOne("DiscordClone.Models.Channel", "Channel")
+                        .WithMany("ChannelRoom")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DiscordClone.Models.UserProfile", "User")
+                        .WithMany("ChannelRoom")
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DiscordClone.Models.Friendship", b =>
                 {
+                    b.HasOne("DiscordClone.Models.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DiscordClone.Models.UserProfile", "User")
                         .WithMany("Friendships")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -607,7 +668,7 @@ namespace DiscordClone.Migrations
                     b.HasOne("DiscordClone.Models.UserProfile", "User")
                         .WithMany("Server")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -637,7 +698,7 @@ namespace DiscordClone.Migrations
                     b.HasOne("DiscordClone.Models.ApplicationUser", "User")
                         .WithOne("Profile")
                         .HasForeignKey("DiscordClone.Models.UserProfile", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -647,8 +708,8 @@ namespace DiscordClone.Migrations
                 {
                     b.HasOne("DiscordClone.Models.Server", "Server")
                         .WithMany("VoiceChannel")
-                        .HasForeignKey("VoiceChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Server");
@@ -707,6 +768,8 @@ namespace DiscordClone.Migrations
 
             modelBuilder.Entity("DiscordClone.Models.Channel", b =>
                 {
+                    b.Navigation("ChannelRoom");
+
                     b.Navigation("Messages");
                 });
 
@@ -738,6 +801,8 @@ namespace DiscordClone.Migrations
 
             modelBuilder.Entity("DiscordClone.Models.UserProfile", b =>
                 {
+                    b.Navigation("ChannelRoom");
+
                     b.Navigation("Friendships");
 
                     b.Navigation("Messages");
