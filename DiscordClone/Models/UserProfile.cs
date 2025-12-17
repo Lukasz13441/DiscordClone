@@ -15,6 +15,8 @@ namespace DiscordClone.Models
         public int Tag { get; set; }
         public int RoomId { get; set; }
 
+        public ActivityStatus activityStatus { get; set; }
+
         // Navigation
 
         public virtual ApplicationUser User { get; set; }
@@ -27,4 +29,9 @@ namespace DiscordClone.Models
         public virtual List<MessageReaction> Reactions { get; set; } = new();
     }
 
+    public enum ActivityStatus
+    {
+        Online,
+        Offline
+    }
 }

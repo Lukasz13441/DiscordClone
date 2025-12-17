@@ -187,5 +187,10 @@ namespace DiscordClone.Data
 
             base.OnModelCreating(modelBuilder);
         }
+
+        internal async Task UpdateAsync(object value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -14,8 +14,11 @@
     @* Dodatkowe style dla użytkowników w roli Member *@
     @if (User.IsInRole("Member"))
     {
+        @Model string? userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
         <link rel="stylesheet" href="~/css/side-header.css" />
         <link rel="stylesheet" href="~/css/discord-messages.css" />
+        <input hidden id="UserId" value="@userId"/>
     }
 </head>
 <body>
@@ -25,7 +28,7 @@
      <main style="background:#36393f;">
         @RenderBody()
     </main> 
-
+    <script src="~/js/discord.js" asp-append-version="true"></script>
     }
     else
     {
@@ -69,6 +72,7 @@
     <!-- SKRYPTY -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body> 

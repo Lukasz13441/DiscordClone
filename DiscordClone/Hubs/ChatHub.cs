@@ -1,20 +1,25 @@
 ﻿using DiscordClone.Data;
 using DiscordClone.Models; // Upewnij się, że tu są Twoje modele (Message, MessageReaction, ChannelRoom)
+using DiscordClone.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+
 
 namespace DiscordClone.Hubs
 {
     public class ChatHub : Hub
     {
         private readonly ApplicationDbContext _context;
+        
 
         public ChatHub(ApplicationDbContext context)
         {
             _context = context;
+
         }
 
         // ─────────────────────────────
@@ -45,6 +50,19 @@ namespace DiscordClone.Hubs
             }
 
             await base.OnDisconnectedAsync(exception);
+        }
+
+         public async Task LeaveApp(string userId)
+        {
+            var user = await _context.UserProfiles
+            .FirstOrDefaultAsync(us => us.UserId == userId);
+
+            if (user != null)
+            {
+                user.activityStatus = ActivityStatus.Offline;
+                _context.Update(user);
+                _context.SaveChanges();
+            }
         }
 
         // ─────────────────────────────
@@ -86,25 +104,53 @@ namespace DiscordClone.Hubs
                 $"✅ Połączono z serwerem jako: {username}");
         }
 
-        //public async Task Ping()
-        //{
-        //    var connectionId = Context.ConnectionId;
+        
 
-        //    // POPRAWKA: Używamy _context zamiast _db oraz tabeli ChannelRooms
-        //    var row = await _context.ChannelRooms.FirstOrDefaultAsync(x => x.ConnectionId == connectionId);
+        public async Task Ping(string userId)
+        {
+            var user = await _context.UserProfiles
+            .FirstOrDefaultAsync(us => us.UserId == userId);
 
-        //    if (row is not null)
-        //    {
-        //        // Jeśli Twój model ChannelRoom nie ma LastSeenUtc, usuń te linie:
-        //        // row.LastSeenUtc = DateTime.UtcNow;
-        //        // await _context.SaveChangesAsync();
-        //    }
-        //}
+            
 
-        // ─────────────────────────────
-        // 3. WYSYŁANIE WIADOMOŚCI
-        // ─────────────────────────────
-        public async Task SendMessage(int channelId, int userId, string message)
+            if (user == null) {
+                user.activityStatus = ActivityStatus.Offline;
+                _context.Update(user);
+                _context.SaveChanges();
+                return;
+            }
+
+               var friends = await _context.Friendships
+                .Where(f => (f.UserId == user.Id || f.FriendId == user.Id) &&
+                           (f.Status == Status.Accepted || f.Status == Status.Chating))
+                .Select(f => f.UserId == user.Id ? f.FriendId : f.UserId)
+                .Join(_context.UserProfiles,
+                      friendId => friendId,
+                      u => u.Id,
+                      (friendId, profile) => profile)
+                .ToListAsync(); 
+  
+            user.activityStatus = ActivityStatus.Online;
+                _context.Update(user);
+                _context.SaveChanges();
+
+            await Clients.Caller.SendAsync("ActivityStatus",
+                $"uzytkownik {user.Username} jest onlie", user.activityStatus);
+
+            foreach (var friend in friends)
+            {
+                await Clients.Caller.SendAsync(
+                    "FriendActivityStatus",
+                    $"uzytkownik {friend.Username} jest onlie",
+                    friend.activityStatus,
+                    friend.Id
+                );
+            }
+        }
+    // ─────────────────────────────
+    // 3. WYSYŁANIE WIADOMOŚCI
+    // ─────────────────────────────
+    public async Task SendMessage(int channelId, int userId, string message)
         {
             var user = await _context.UserProfiles.FindAsync(userId);
             if (user == null) return;

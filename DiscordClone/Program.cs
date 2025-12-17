@@ -1,5 +1,6 @@
 using DiscordClone.Data;
 using DiscordClone.Hubs;
+using DiscordClone.Models;
 using DiscordClone.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,14 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
     }
+}
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    await context.UserProfiles
+        .ExecuteUpdateAsync(u =>
+            u.SetProperty(x => x.activityStatus, ActivityStatus.Offline));
 }
 
 app.Run();

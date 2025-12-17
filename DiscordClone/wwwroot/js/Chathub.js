@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================
 
     // Przekazujemy channelId w URL, aby Hub wiedział do jakiej grupy nas dodać (OnConnectedAsync)
+
+    let pingTimer = null;
+
     const connection = new signalR.HubConnectionBuilder()
         .withUrl(`/chathub?channelId=${currentChannelId}`)
         .withAutomaticReconnect()
         .configureLogging(signalR.LogLevel.Information)
         .build();
-
-    let pingTimer = null;
-
     // ==========================================================
     // 2. NASŁUCHIWANIE EVENTÓW (Odbieranie danych)
     // ==========================================================
@@ -172,13 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.warn("⚠️ Brak UserID lub ChannelID - pomijam rejestrację w bazie.");
             }
-
-            // 3. Start Pingowania (aktualizacja LastSeen co 15s)
-            //pingTimer = setInterval(() => {
-            //    if (connection.state === signalR.HubConnectionState.Connected) {
-            //        connection.invoke("Ping").catch(err => console.error("Ping error:", err));
-            //    }
-            //}, 15000);
 
         } catch (err) {
             console.error("❌ Błąd połączenia:", err);
