@@ -39,28 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
     });
-
+    let pingTimer = null;
     window.addEventListener("beforeunload", function () {
         connection.invoke("LeaveApp", UserId)
     });
 
-
+    let ping = () => {
+        if (connection.state === signalR.HubConnectionState.Connected) {
+            connection.invoke("Ping", UserId).catch(err => console.error("Ping error:", err));
+        }
+    }
 
     async function start() {
         try {
             await connection.start();
             console.log("✅ Połączono z SignalR");
-            pingTimer = setInterval(() => {
-             if (connection.state === signalR.HubConnectionState.Connected) {
-                 connection.invoke("Ping", UserId).catch(err => console.error("Ping error:", err));
-             }
+             pingTimer = setInterval(() => {
+                ping();
               }, 5000);
         } catch (err) {
             console.error("❌ Błąd połączenia:", err);
             // Ponawianie próby za 5 sekund
-            setTimeout(start, 5000);
+            setTimeout(start, 15000);
         }
     }
 
     start();
+    setTimeout(ping,500)
+    
 });

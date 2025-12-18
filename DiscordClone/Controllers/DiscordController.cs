@@ -101,9 +101,9 @@ namespace DiscordClone.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNewServerForm(Server model)
+        public async Task<IActionResult> CreateNewServerFormAsync(ServerViewModel model)
         {
-            _ServerService.CreateServer(GetUserId(), model);
+            await _ServerService.CreateServerAsync(GetUserId(), model);
             return RedirectToAction("Index");
         }
 

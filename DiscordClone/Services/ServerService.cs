@@ -30,19 +30,19 @@ namespace DiscordClone.Services
                 .ToList();
         }
 
-        public void CreateServer(string userId, Server model)
+        public async Task CreateServerAsync(string userId, ServerViewModel model)
         {
             var UserId = _FriendsService.GetUserIntId(userId);
 
-            _context.Servers.Add(new Server
+            await _context.Servers.AddAsync(new Server
             {
                 Name = model.Name,
                 OwnerId = UserId,
                 CreatedAt = DateTime.Now,
-                IconURL = "/images/default_avatar.png"
+                IconURL = await _ChannelService.SaveAvatarAsync(model.IconURL, null)
             });
             
-            _context.SaveChanges();
+             await _context.SaveChangesAsync();
             var Server = _context.Servers
                 .OrderByDescending(s => s.CreatedAt)
                 .FirstOrDefault();
