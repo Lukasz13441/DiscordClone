@@ -13,8 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const currentChannelId = channelIdInput.value;
-    const currentUserId = userProfileIdInput ? userProfileIdInput.value : 0;
+    const currentChannelId = parseInt(channelIdInput.value);
+    const currentUserId = userProfileIdInput ? parseInt(userProfileIdInput.value) : 0;
+
+    if (isNaN(currentChannelId) || isNaN(currentUserId)) {
+        console.error("❌ Invalid channelId or userId");
+        return;
+    }
+
 
     const REACTION_MAP = {
         "1": "👍",
@@ -42,51 +48,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================
 
     // A. Wiadomości
-    connection.on("ReceiveMessage", (id, username, message, date, reactions) => {
+    connection.on("ReceiveMessage", (id, username, message, date, reactions = [], imageUrl = null) => {
         console.log("📨 Nowa wiadomość:", id);
 
-        // Generowanie HTML dla pickera reakcji
+        // Picker reakcji
         let reactionPickerHtml = '';
         for (const [key, emoji] of Object.entries(REACTION_MAP)) {
             reactionPickerHtml += `<span class="reaction-option" data-reaction-key="${key}">${emoji}</span>`;
         }
 
-        // Generowanie HTML dla istniejących reakcji
+        // Istniejące reakcje
         let existingReactionsHtml = '';
         if (reactions && reactions.length > 0) {
             for (const reaction of reactions) {
-                const reactionKey = reaction.reactionKey;
-                const emojiSymbol = REACTION_MAP[reactionKey] || '?';
+                const emojiSymbol = REACTION_MAP[reaction.reactionKey] || '?';
                 const count = reaction.count;
-                existingReactionsHtml += `<div class="reaction" data-reaction-key="${reactionKey}">${emojiSymbol} <span class="count">${count}</span></div>`;
+                existingReactionsHtml += `<div class="reaction" data-reaction-key="${reaction.reactionKey}">${emojiSymbol} <span class="count">${count}</span></div>`;
             }
         }
 
+        // Obrazek
+        let imageHtml = '';
+        if (imageUrl) {
+            imageHtml = `<div class="image-preview"><img src="${imageUrl}" /><div class="remove-preview" style="display:none;"></div></div>`;
+        }
+
         const html = `
-            <div class="message-row" data-message-id="${id}">
-                <img src="/img/default-avatar.png" class="avatar" alt="Avatar"/>
-                <div class="message-content">
-                    <div class="message-header">
-                        <span class="username">${username}</span>
-                        <span class="timestamp">${new Date(date).toLocaleTimeString()}</span>
-                    </div>
-                    <div class="message-text">${message}</div>
-                    <div class="message-reactions">${existingReactionsHtml}</div>
-                    <div class="add-reaction-btn">➕</div>
-                    <div class="message-actions">
-                        <span class="action-button edit-message-btn">✏️</span>
-                        <span class="action-button delete-message-btn">🗑️</span>
-                    </div>
-                    <div class="reaction-picker" style="display:none;">
-                        ${reactionPickerHtml}
-                    </div>
+        <div class="message-row" data-message-id="${id}">
+            <img src="/img/default-avatar.png" class="avatar" alt="Avatar"/>
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="username">${username}</span>
+                    <span class="timestamp">${new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-            </div>`;
+                <div class="message-text">${message}</div>
+                ${imageHtml}
+                <div class="message-reactions">${existingReactionsHtml}</div>
+                <div class="add-reaction-btn">➕</div>
+                <div class="message-actions">
+                    <span class="action-button edit-message-btn">✏️</span>
+                    <span class="action-button delete-message-btn">🗑️</span>
+                </div>
+                <div class="reaction-picker" style="display:none;">
+                    ${reactionPickerHtml}
+                </div>
+            </div>
+        </div>
+    `;
 
-        const list = document.getElementById("messagesList");
-        if (list) list.innerHTML += html;
+        const messagesList = document.getElementById("messagesList");
+        if (messagesList) {
+            messagesList.innerHTML += html;
+            messagesList.scrollTop = messagesList.scrollHeight; // automatyczny scroll
+        }
     });
-
     // B. Reakcje
     connection.on("UpdateReaction", (messageId, reactionKey, newCount) => {
         const messageRow = document.querySelector(`.message-row[data-message-id='${messageId}']`);
@@ -199,22 +214,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. OBSŁUGA UI (Wysyłanie, Kliknięcia)
     // ==========================================================
 
+    // ====== FILE UPLOAD FUNCTION ======
+    async function uploadFile(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/Discord/Upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error("Upload failed: " + text);
+        }
+
+        const data = await response.json();
+        return data.url; // <-- "/uploads/xxx.png"
+    }
+
+
     const sendBtn = document.getElementById("sendBtn");
+    const messageInput = document.getElementById("messageInput");
+    const fileInput = document.getElementById("fileInput");
+
     if (sendBtn) {
-        sendBtn.addEventListener("click", () => {
-            const messageInput = document.getElementById("messageInput");
+        sendBtn.addEventListener("click", async () => {
+            let message = messageInput.value.trim();
+            let imageUrl = null;
 
-            if (messageInput && messageInput.value.trim()) {
-                connection.invoke("SendMessage",
-                    parseInt(currentChannelId),
-                    parseInt(currentUserId),
-                    messageInput.value
-                ).catch(err => console.error("❌ Błąd wysyłania:", err));
-
-                messageInput.value = "";
+            if (fileInput.files.length > 0) {
+                try {
+                    imageUrl = await uploadFile(fileInput.files[0]);
+                    console.log("🖼 Image uploaded:", imageUrl);
+                } catch (err) {
+                    console.error("❌ Upload failed:", err);
+                    return;
+                }
             }
+
+            if (!message && !imageUrl) return;
+
+            try {
+                await connection.invoke(
+                    "SendMessage",
+                    currentChannelId,
+                    currentUserId,
+                    message,
+                    imageUrl
+                );
+            } catch (err) {
+                console.error("❌ SendMessage failed:", err);
+                return;
+            }
+
+            messageInput.value = "";
+            fileInput.value = "";
+            document.getElementById("imagePreviewContainer").innerHTML = "";
         });
     }
+
 
     // Event Delegation
     document.body.addEventListener('click', async (e) => {
@@ -288,3 +347,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+

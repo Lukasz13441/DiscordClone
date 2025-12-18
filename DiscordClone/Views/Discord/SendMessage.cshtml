@@ -1,8 +1,6 @@
-
-
 <style>
     .reaction-picker {
-        display: none; /* Hidden by default */
+        display: none;
         flex-direction: row;
         gap: 5px;
         padding: 5px;
@@ -26,8 +24,52 @@
             background: #40444b;
             border-radius: 3px;
         }
-</style>
 
+    /* ★ DODANE – plusik */
+    .file-upload-btn {
+        cursor: pointer;
+        font-size: 22px;
+        padding: 6px 10px;
+        margin-right: 6px;
+        background: #40444b;
+        border-radius: 6px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+    }
+
+        .file-upload-btn:hover {
+            background: #5865f2;
+        }
+
+    /* ★ DODANE – preview */
+    .image-preview {
+        position: relative;
+        margin-top: 6px;
+        max-width: 120px;
+    }
+
+        .image-preview img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+    .remove-preview {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #ff4d4f;
+        color: #fff;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+</style>
 
 <div class="chat-container">
     <div id="messagesList" class="messages-area">
@@ -40,16 +82,22 @@
                         <span class="username">@msg.User.Username</span>
                         <span class="timestamp">@msg.CreatedAt.ToString("HH:mm")</span>
                     </div>
-                    <div class="message-text">@msg.Value</div>
 
-                    <!-- Kontener na reakcje -->
+                    <div class="message-text">@msg.Value</div>
+                    @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                    {
+                        <div class="image-preview">
+                            <img src="@msg.ImageUrl" alt="message image" />
+                        </div>
+                    }
+
+
                     <div class="message-reactions">
                         @foreach (var reaction in msg.Reactions)
                         {
                             var count = reaction.Count;
                             if (count > 0)
                             {
-                                // Mapowanie klucza reakcji na emoji (MUST MATCH JavaScript REACTION_MAP)
                                 var emojiDisplay = reaction.Emoji switch
                                 {
                                     "1" => "👍",
@@ -66,16 +114,13 @@
                         }
                     </div>
 
-                    <!-- Przycisk dodawania reakcji -->
                     <div class="add-reaction-btn">➕</div>
 
-                    <!-- Akcje (edycja/usuwanie) -->
                     <div class="message-actions">
                         <span class="action-button edit-message-btn">✏️</span>
                         <span class="action-button delete-message-btn">🗑️</span>
                     </div>
 
-                    <!-- Menu wyboru reakcji (MUST USE data-reaction-key) -->
                     <div class="reaction-picker" style="display:none;">
                         <span class="reaction-option" data-reaction-key="1">👍</span>
                         <span class="reaction-option" data-reaction-key="2">❤️</span>
@@ -92,15 +137,60 @@
         <input hidden id="channelId" value="@ViewBag.Id" />
         <input hidden id="UserProfileId" value="@ViewBag.UserProfile.Id" />
         <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
+
+        <!-- ★ DODANE – plusik -->
+        <label for="fileInput" class="file-upload-btn">➕</label>
+        <input type="file" id="fileInput" accept="image/*" hidden />
+
         <input type="text" id="messageInput" class="chat-input" placeholder="Wiadomość" />
+
+        <!-- ★ DODANE – preview kontener -->
+        <div id="imagePreviewContainer"></div>
+
         <script>
             document.getElementById("messageInput").addEventListener("keydown", function (event) {
                 if (event.key === "Enter") {
-                    event.preventDefault(); // Zapobiega domyślnemu zachowaniu (nowa linia)
-                    document.getElementById("sendBtn").click(); // Symuluje kliknięcie przycisku Wyślij
+                    event.preventDefault();
+                    document.getElementById("sendBtn").click();
                 }
-						});
-		</script>
+            });
+
+
+            // ★ DODANE – preview + anulowanie
+            const fileInput = document.getElementById("fileInput");
+            const previewContainer = document.getElementById("imagePreviewContainer");
+
+            fileInput.addEventListener("change", function () {
+                const file = this.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith("image/")) {
+                    alert("Tylko zdjęcia!");
+                    this.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewContainer.innerHTML = `
+                        <div class="image-preview">
+                            <img src="${e.target.result}" />
+                            <div class="remove-preview">✕</div>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            previewContainer.addEventListener("click", function (e) {
+                if (e.target.classList.contains("remove-preview")) {
+                    previewContainer.innerHTML = "";
+                    fileInput.value = "";
+                }
+            });
+            // ★ KONIEC DODANEGO
+        </script>
+
         <button id="sendBtn" class="chat-send-btn">Wyślij</button>
     </div>
 </div>

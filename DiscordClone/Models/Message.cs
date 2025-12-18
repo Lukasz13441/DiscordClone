@@ -10,6 +10,7 @@ namespace DiscordClone.Models
         public DateTime CreatedAt { get; set; }
         public int UserId { get; set; }
         public int ChannelId { get; set; }
+        public string? ImageUrl { get; set; } 
 
         // Navigation
         public virtual UserProfile User { get; set; }

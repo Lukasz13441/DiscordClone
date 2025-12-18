@@ -57,6 +57,29 @@ namespace DiscordClone.Controllers
             return RedirectToAction("ManageServers", new { Id = model.Id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Brak pliku.");
+            if (file.Length > 10 * 1024 * 1024) // 10 MB limit
+                return BadRequest("Plik jest zbyt duży.");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var url = $"/uploads/{fileName}";
+            return Ok(new { url });
+        }
+
+
         public async Task<IActionResult> Server(int Id)
         {
             var userId = GetUserId();

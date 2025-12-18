@@ -104,7 +104,7 @@ namespace DiscordClone.Hubs
         // ─────────────────────────────
         // 3. WYSYŁANIE WIADOMOŚCI
         // ─────────────────────────────
-        public async Task SendMessage(int channelId, int userId, string message)
+        public async Task SendMessage(int channelId, int userId, string message, string? imageUrl = null)
         {
             var user = await _context.UserProfiles.FindAsync(userId);
             if (user == null) return;
@@ -114,11 +114,13 @@ namespace DiscordClone.Hubs
                 ChannelId = channelId,
                 UserId = userId,
                 Value = message,
+                ImageUrl = imageUrl,
                 CreatedAt = DateTime.UtcNow
             };
 
             _context.Messages.Add(chatMessage);
             await _context.SaveChangesAsync();
+
 
             var reactions = new List<object>();
 
@@ -129,7 +131,8 @@ namespace DiscordClone.Hubs
                 user.Username,
                 message,
                 chatMessage.CreatedAt,
-                reactions);
+                reactions,
+                imageUrl);
         }
 
         // ─────────────────────────────
@@ -205,3 +208,4 @@ namespace DiscordClone.Hubs
         }
     }
 }
+
