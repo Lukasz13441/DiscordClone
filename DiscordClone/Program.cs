@@ -49,7 +49,9 @@ if (app.Environment.IsDevelopment())
 
     app.MapHub<ChatHub>("/chatHub");
 
-    app.MapControllerRoute(
+    app.MapHub<VoiceHub>("/voiceHub");
+
+app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
     app.MapRazorPages();

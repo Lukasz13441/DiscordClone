@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DiscordClone.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Voice_chanells : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -167,7 +167,9 @@ namespace DiscordClone.Migrations
                     AvatarURL = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BIO = table.Column<string>(type: "nvarchar(190)", maxLength: 190, nullable: false),
-                    Tag = table.Column<int>(type: "int", nullable: false)
+                    Tag = table.Column<int>(type: "int", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    activityStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,7 +179,7 @@ namespace DiscordClone.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,7 +200,13 @@ namespace DiscordClone.Migrations
                         column: x => x.FriendId,
                         principalTable: "UserProfile",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friendship_UserProfile_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +228,7 @@ namespace DiscordClone.Migrations
                         column: x => x.OwnerId,
                         principalTable: "UserProfile",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -257,7 +265,9 @@ namespace DiscordClone.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ServerId = table.Column<int>(type: "int", nullable: false)
+                    ServerId = table.Column<int>(type: "int", nullable: false),
+                    Range = table.Column<int>(type: "int", nullable: false),
+                    IsBanned = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,17 +293,17 @@ namespace DiscordClone.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    VoiceChannelId = table.Column<int>(type: "int", nullable: false)
+                    ServerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VoiceChannel", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_VoiceChannel_Server_VoiceChannelId",
-                        column: x => x.VoiceChannelId,
+                        name: "FK_VoiceChannel_Server_ServerId",
+                        column: x => x.ServerId,
                         principalTable: "Server",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -353,12 +363,48 @@ namespace DiscordClone.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChannelRoom",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChannelId = table.Column<int>(type: "int", nullable: true),
+                    VoiceChannelId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ConnectionId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChannelRoom", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChannelRoom_Channel_ChannelId",
+                        column: x => x.ChannelId,
+                        principalTable: "Channel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ChannelRoom_UserProfile_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ChannelRoom_VoiceChannel_VoiceChannelId",
+                        column: x => x.VoiceChannelId,
+                        principalTable: "VoiceChannel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MessageReactions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Emoji = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     MessageId = table.Column<int>(type: "int", nullable: false),
                     UserProfileId = table.Column<int>(type: "int", nullable: true)
@@ -435,9 +481,29 @@ namespace DiscordClone.Migrations
                 column: "ServerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChannelRoom_ChannelId",
+                table: "ChannelRoom",
+                column: "ChannelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChannelRoom_UserId",
+                table: "ChannelRoom",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChannelRoom_VoiceChannelId",
+                table: "ChannelRoom",
+                column: "VoiceChannelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Friendship_FriendId",
                 table: "Friendship",
                 column: "FriendId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendship_UserId",
+                table: "Friendship",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_ChannelId",
@@ -498,9 +564,9 @@ namespace DiscordClone.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_VoiceChannel_VoiceChannelId",
+                name: "IX_VoiceChannel_ServerId",
                 table: "VoiceChannel",
-                column: "VoiceChannelId");
+                column: "ServerId");
         }
 
         /// <inheritdoc />
@@ -522,16 +588,19 @@ namespace DiscordClone.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ChannelRoom");
+
+            migrationBuilder.DropTable(
                 name: "MessageReactions");
 
             migrationBuilder.DropTable(
                 name: "Role");
 
             migrationBuilder.DropTable(
-                name: "VoiceChannel");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "VoiceChannel");
 
             migrationBuilder.DropTable(
                 name: "Message");
