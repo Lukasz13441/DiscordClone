@@ -1,5 +1,4 @@
 ﻿@model DiscordClone.Models.Channel
-
 <style>
     /* Page background */
     .create-channel-container {
@@ -11,12 +10,11 @@
         color: #f2f3f5;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
-
     /* Main box */
     .create-channel-box {
         background: #313338;
         padding: 30px;
-        width: 420px;
+        width: 440px;
         border-radius: 10px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.5);
     }
@@ -34,6 +32,78 @@
         margin-bottom: 20px;
     }
 
+    /* Channel Type Selection */
+    .channel-type-section {
+        margin-bottom: 20px;
+    }
+
+    .type-label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #b5bac1;
+        text-transform: uppercase;
+    }
+
+    .type-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .type-option {
+        display: flex;
+        align-items: center;
+        background: #2b2d31;
+        padding: 12px;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+        .type-option:hover {
+            background: #35373c;
+            border-color: #4f5258;
+        }
+
+        .type-option.active {
+            background: #404249;
+            border-color: #5865f2;
+        }
+
+        .type-option input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #5865f2;
+        }
+
+    .type-info {
+        flex: 1;
+    }
+
+    .type-title {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        font-weight: 600;
+        color: #f2f3f5;
+        margin-bottom: 4px;
+    }
+
+    .type-icon {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+
+    .type-description {
+        font-size: 13px;
+        color: #b5bac1;
+    }
+
     /* Input label */
     .input-label {
         display: block;
@@ -41,8 +111,8 @@
         font-size: 14px;
         font-weight: 600;
         color: #b5bac1;
+        text-transform: uppercase;
     }
-
     /* Input wrapper */
     .input-wrapper {
         display: flex;
@@ -57,14 +127,12 @@
         .input-wrapper:hover {
             border-color: #4f5258;
         }
-
-    /* Hashtag icon */
-    .hashtag {
+    /* Icon */
+    .channel-icon {
         color: #b5bac1;
         margin-right: 8px;
         font-size: 16px;
     }
-
     /* Channel input */
     .channel-input {
         flex: 1;
@@ -79,7 +147,6 @@
         .channel-input::placeholder {
             color: #6d6f78;
         }
-
     /* Buttons */
     .button-row {
         display: flex;
@@ -96,8 +163,8 @@
         font-weight: 600;
         cursor: pointer;
         transition: 0.15s;
+        border: none;
     }
-
     /* Cancel Button */
     .cancel-btn {
         background: transparent;
@@ -108,11 +175,9 @@
             color: #fff;
             text-decoration: underline;
         }
-
     /* Create Button */
     .create-btn {
         background: #5865f2;
-        border: none;
         color: #fff;
     }
 
@@ -121,32 +186,101 @@
         }
 </style>
 
-
 <div class="create-channel-container">
-
     <div class="create-channel-box">
-
         <h2 class="title">Create Channel</h2>
-        <p class="subtitle">Enter a channel name to create a new text channel.</p>
+        <p class="subtitle">Choose between a text or voice channel.</p>
 
-        <form asp-action="AddChanelForm" class="channel-form">
+        <form id="channelForm">
+            <input hidden type="number" id="serverId" value="@ViewBag.Id" />
 
-            <input hidden type="number" asp-for="ServerId" value="@ViewBag.Id" />
+            <!-- Channel Type Selection -->
+            <div class="channel-type-section">
+                <label class="type-label">Channel Type</label>
+                <div class="type-options">
+                    <!-- Text Channel Option -->
+                    <label class="type-option active" data-type="text">
+                        <input type="radio" name="channelType" value="text" checked />
+                        <div class="type-info">
+                            <div class="type-title">
+                                <span class="type-icon">#</span>
+                                Text
+                            </div>
+                            <div class="type-description">Send messages, images, GIFs, emoji, opinions, and puns</div>
+                        </div>
+                    </label>
+
+                    <!-- Voice Channel Option -->
+                    <label class="type-option" data-type="voice">
+                        <input type="radio" name="channelType" value="voice" />
+                        <div class="type-info">
+                            <div class="type-title">
+                                <span class="type-icon">🔊</span>
+                                Voice
+                            </div>
+                            <div class="type-description">Hang out together with voice, video, and screen share</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
 
             <!-- Channel Name -->
             <label class="input-label">Channel Name</label>
             <div class="input-wrapper">
-                <span class="hashtag">#</span>
-                <input asp-for="Name" class="channel-input" placeholder="new-channel" autocomplete="off" />
+                <span class="channel-icon" id="channelIcon">#</span>
+                <input type="text" id="channelName" class="channel-input" placeholder="new-channel" autocomplete="off" required />
             </div>
 
             <!-- Buttons -->
             <div class="button-row">
-                <a asp-action="Server" asp-route-id="@ViewBag.Id" class="cancel-btn">Cancel</a>
+                <a href="/Discord/Server/@ViewBag.Id" class="cancel-btn">Cancel</a>
                 <button type="submit" class="create-btn">Create Channel</button>
             </div>
-
         </form>
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeOptions = document.querySelectorAll('.type-option');
+        const channelIcon = document.getElementById('channelIcon');
+        const channelNameInput = document.getElementById('channelName');
+        const form = document.getElementById('channelForm');
+
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+
+                // Add active class to clicked option
+                this.classList.add('active');
+
+                // Update icon based on selected type
+                const type = this.dataset.type;
+                if (type === 'text') {
+                    channelIcon.textContent = '#';
+                    channelNameInput.placeholder = 'new-channel';
+                } else {
+                    channelIcon.textContent = '🔊';
+                    channelNameInput.placeholder = 'general-voice';
+                }
+            });
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const serverId = document.getElementById('serverId').value;
+            const channelName = channelNameInput.value;
+            const selectedType = document.querySelector('input[name="channelType"]:checked').value;
+
+            // Redirect to appropriate action based on type
+            if (selectedType === 'text') {
+                window.location.href = `/Discord/AddTextChannel?serverId=${serverId}&name=${encodeURIComponent(channelName)}`;
+            } else {
+                window.location.href = `/Discord/AddVoiceChannel?serverId=${serverId}&name=${encodeURIComponent(channelName)}`;
+            }
+        });
+    });
+</script>

@@ -82,7 +82,7 @@ namespace DiscordClone.Hubs
                 // Tworzymy nowy wpis
                 _context.ChannelRooms.Add(new ChannelRoom
                 {
-                    userId = userId, // Poprawiona wielkość liter (zależnie od Twojego modelu)
+                    UserId = userId, // Poprawiona wielkość liter (zależnie od Twojego modelu)
                     ConnectionId = connectionId,
                     ChannelId = ChannelId
                     // LastSeenUtc = DateTime.UtcNow // Opcjonalnie, jeśli masz to pole
@@ -91,7 +91,7 @@ namespace DiscordClone.Hubs
             else
             {
                 // Aktualizujemy istniejący
-                existing.userId = userId;
+                existing.UserId = userId;
             }
 
             await _context.SaveChangesAsync();

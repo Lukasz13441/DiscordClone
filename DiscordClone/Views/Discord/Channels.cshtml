@@ -14,6 +14,8 @@
 
     <!-- Channel List -->
     <ul class="channel-list">
+        <!-- Text Channels Section -->
+        <li class="channel-section-header">TEXT CHANNELS</li>
         @foreach (var channel in ViewBag.Chanels)
         {
             <li class="channel-item">
@@ -23,6 +25,22 @@
                     <i class="fa-solid fa-hashtag channel-icon"></i>
                     <span class="channel-name">@channel.Name</span>
                 </a>
+            </li>
+        }
+
+        <!-- Voice Channels Section -->
+        <li class="channel-section-header">VOICE CHANNELS</li>
+        @foreach (var voiceChannel in ViewBag.VoiceChannels)
+        {
+            <li class="voice-channel-item" id="voice-channel-@voiceChannel.Id">
+                <div class="voice-channel-header"
+                     data-voice-id="@voiceChannel.Id"
+                     onclick="joinVoiceChannelClick(@voiceChannel.Id, @ViewBag.UserProfile.Id)">
+                    <i class="fa-solid fa-volume-high channel-icon"></i>
+                    <span class="channel-name">@voiceChannel.Name</span>
+                </div>
+                <!-- Users container - will be populated by JavaScript -->
+                <div class="voice-users-container"></div>
             </li>
         }
 
@@ -42,7 +60,7 @@
 </aside>
 
 <!-- ============================================ -->
-<!-- CSS STYLES - Add this to your main CSS file -->
+<!-- CSS STYLES -->
 <!-- ============================================ -->
 <style>
     /* =============================== */
@@ -135,6 +153,21 @@
                 background: #1e1f22;
             }
 
+    /* Section Headers */
+    .channel-section-header {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #949ba4;
+        padding: 16px 8px 4px 8px;
+        letter-spacing: 0.5px;
+        margin-top: 8px;
+    }
+
+        .channel-section-header:first-child {
+            margin-top: 0;
+        }
+
     /* Channel Entry */
     .channel-item {
         margin-bottom: 2px;
@@ -151,6 +184,7 @@
         font-weight: 500;
         transition: all 0.15s ease;
         min-height: 32px;
+        cursor: pointer;
     }
 
         .channel-link:hover {
@@ -167,7 +201,7 @@
                 color: #ffffff;
             }
 
-    /* # Icon */
+    /* Channel Icon */
     .channel-icon {
         margin-right: 6px;
         font-size: 20px;
@@ -178,6 +212,78 @@
     }
 
     .channel-name {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /* Voice Channel Specific */
+    .voice-channel-item {
+        margin-bottom: 2px;
+    }
+
+    .voice-channel-header {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 4px;
+        color: #949ba4;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        min-height: 32px;
+        cursor: pointer;
+    }
+
+        .voice-channel-header:hover {
+            background: #35373c;
+            color: #dbdee1;
+        }
+
+    /* Voice Users Container */
+    .voice-users-container {
+        padding-left: 26px;
+    }
+
+    .voice-user {
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        margin-bottom: 2px;
+        border-radius: 4px;
+        transition: background 0.15s ease;
+    }
+
+        .voice-user:hover {
+            background: #35373c;
+        }
+
+    .voice-user-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 8px;
+        flex-shrink: 0;
+        background: #5865f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+        .voice-user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    .voice-user-name {
+        font-size: 14px;
+        color: #b9bbbe;
+        font-weight: 500;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
@@ -251,7 +357,6 @@
             object-fit: cover;
         }
 
-    /* Status Indicator for Mini Profile */
     .mini-profile-status-indicator {
         position: absolute;
         bottom: -2px;
@@ -316,3 +421,98 @@
             font-size: 16px;
         }
 </style>
+
+<!-- ============================================ -->
+<!-- JAVASCRIPT - Add to bottom of page or separate file -->
+<!-- ============================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    // Connect to VoiceHub
+    const voiceConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/voiceHub")
+        .withAutomaticReconnect()
+        .build();
+
+    // Start connection
+    voiceConnection.start()
+        .then(() => console.log("✅ Connected to VoiceHub"))
+        .catch(err => console.error("❌ VoiceHub connection error:", err));
+
+    // Function to join voice channel (called from onclick)
+    function joinVoiceChannelClick(voiceChannelId, userId) {
+        console.log(`🎤 Joining voice channel ${voiceChannelId}`);
+        voiceConnection.invoke("JoinVoiceChannel", voiceChannelId, userId)
+            .then(() => console.log("✅ Joined voice channel"))
+            .catch(err => console.error("❌ Error joining:", err));
+    }
+
+    // Function to leave voice channel
+    function leaveVoiceChannel(userId) {
+        voiceConnection.invoke("LeaveVoiceChannel", userId)
+            .then(() => console.log("✅ Left voice channel"))
+            .catch(err => console.error("❌ Error leaving:", err));
+    }
+
+    // Listen for users joining
+    voiceConnection.on("UserJoinedVoice", (voiceChannelId, users) => {
+        console.log(`📢 UserJoinedVoice event for channel ${voiceChannelId}:`, users);
+        updateVoiceChannelUI(voiceChannelId, users);
+    });
+
+    // Listen for users leaving
+    voiceConnection.on("UserLeftVoice", (voiceChannelId, users) => {
+        console.log(`📢 UserLeftVoice event for channel ${voiceChannelId}:`, users);
+        updateVoiceChannelUI(voiceChannelId, users);
+    });
+
+    // Update UI to show users in voice channel
+    function updateVoiceChannelUI(voiceChannelId, users) {
+        const container = document.querySelector(`#voice-channel-${voiceChannelId} .voice-users-container`);
+
+        if (!container) {
+            console.error(`❌ Container not found for voice channel ${voiceChannelId}`);
+            return;
+        }
+
+        // Clear existing users
+        container.innerHTML = '';
+
+        // Add each user
+        users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'voice-user';
+
+            // Create avatar
+            const avatar = document.createElement('div');
+            avatar.className = 'voice-user-avatar';
+
+            if (user.avatarURL && user.avatarURL !== '') {
+                const img = document.createElement('img');
+                img.src = user.avatarURL;
+                img.alt = user.username;
+                avatar.appendChild(img);
+            } else {
+                // Show first letter of username if no avatar
+                avatar.textContent = user.username.substring(0, 1).toUpperCase();
+            }
+
+            // Create username span
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'voice-user-name';
+            nameSpan.textContent = user.username;
+
+            // Assemble
+            userDiv.appendChild(avatar);
+            userDiv.appendChild(nameSpan);
+            container.appendChild(userDiv);
+        });
+
+        console.log(`✅ Updated UI for voice channel ${voiceChannelId} with ${users.length} users`);
+    }
+
+    // Handle page unload - leave voice channel
+    window.addEventListener('beforeunload', () => {
+        const userId = @ViewBag.UserProfile.Id;
+        leaveVoiceChannel(userId);
+    });
+</script>

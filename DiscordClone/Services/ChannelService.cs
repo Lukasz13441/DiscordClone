@@ -35,7 +35,8 @@ namespace DiscordClone.Services
             var channels = _context.Channels
                 .Where(f => f.ServerId == ServerId)
                 .ToList();
-            if (channels == null) {
+            if (channels == null)
+            {
                 channels = _context.Channels
                     .Where(f => f.FriendShipId == ServerId)
                     .ToList();
@@ -46,11 +47,11 @@ namespace DiscordClone.Services
             }
             return channels;
         }
-
         public void CreateChannel(int serverId, Channel model)
         {
             var server = _context.Servers.FirstOrDefault(s => s.Id == serverId);
             if (server == null) return;
+
             _context.Channels.Add(new Channel
             {
                 Name = model.Name,
@@ -149,7 +150,7 @@ namespace DiscordClone.Services
         {
             if (_context.Channels.Any(c => c.FriendShipId == FriendshipId))
             {
-                return; 
+                return;
             }
             _context.Channels.Add(new Channel
             {
@@ -176,7 +177,7 @@ namespace DiscordClone.Services
 
             // Aktualizacja pól tekstowych
             if (model.Username != null) user.Username = model.Username;
-            
+
             if (model.BIO != null) user.BIO = model.BIO;
 
             // Obsługa avatara
@@ -215,6 +216,31 @@ namespace DiscordClone.Services
             await file.CopyToAsync(stream);
 
             return $"/avatars/{fileName}";
+        }
+
+        //voice channel part
+
+        public void CreateVoiceChannel(int serverId, string name)
+        {
+            var server = _context.Servers.FirstOrDefault(s => s.Id == serverId);
+            if (server == null) return;
+
+            _context.VoiceChannels.Add(new VoiceChannel
+            {
+                Name = name,
+                ServerId = serverId
+            });
+            _context.SaveChanges();
+        }
+
+
+
+        // Add method to get voice channels
+        public List<VoiceChannel> GetVoiceChannels(int serverId)
+        {
+            return _context.VoiceChannels
+                .Where(vc => vc.ServerId == serverId)
+                .ToList();
         }
     }
 }

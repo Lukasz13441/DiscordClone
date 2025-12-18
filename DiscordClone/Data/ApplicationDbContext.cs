@@ -162,27 +162,40 @@ namespace DiscordClone.Data
             {
                 entity.ToTable("VoiceChannel");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.Name).HasMaxLength(50);
+                entity.Property(x => x.Name).HasMaxLength(50).IsRequired();
 
-                // FIXED: Zmieniono z VoiceChannelId na ServerId
                 entity.HasOne(x => x.Server)
                       .WithMany(s => s.VoiceChannel)
-                      .HasForeignKey(x => x.Id)
-                      .OnDelete(DeleteBehavior.Restrict); // Zmienione z Cascade
+                      .HasForeignKey(x => x.ServerId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ChannelRoom>(entity =>
             {
                 entity.ToTable("ChannelRoom");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.ConnectionId).HasMaxLength(200);
 
+                // Text channel relationship (nullable)
+                entity.HasOne(x => x.Channel)
+                      .WithMany(c => c.ChannelRoom)
+                      .HasForeignKey(x => x.ChannelId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Voice channel relationship (nullable)
+                entity.HasOne(x => x.VoiceChannel)
+                      .WithMany()
+                      .HasForeignKey(x => x.VoiceChannelId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // User relationship
                 entity.HasOne(x => x.User)
                       .WithMany(u => u.ChannelRoom)
-                      .HasForeignKey(x => x.userId);
+                      .HasForeignKey(x => x.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(x => x.Channel)
-                      .WithMany(u => u.ChannelRoom)
-                      .HasForeignKey(x => x.ChannelId);
-
+                // Ensure either ChannelId or VoiceChannelId is set, not both
+                // You can add a check constraint in migration if needed
             });
 
             base.OnModelCreating(modelBuilder);

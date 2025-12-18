@@ -60,16 +60,17 @@ namespace DiscordClone.Controllers
         public async Task<IActionResult> Server(int Id)
         {
             var userId = GetUserId();
-            //Channel
-            var ChannelId = _ChannelService.GetFirstChannel(Id);
-            ViewBag.Id = ChannelId;
+            var channelId = _ChannelService.GetFirstChannel(Id);
+
+            ViewBag.Id = channelId;
             ViewBag.UserProfile = _FriendsService.GetUserProfile(userId);
             ViewBag.Server = _ServerService.GetServerById(Id);
             ViewBag.Servers = _ServerService.GetUserServers(userId);
             ViewBag.Chanels = _ChannelService.GetChanels(Id);
+            ViewBag.VoiceChannels = _ChannelService.GetVoiceChannels(Id); // Add this line
 
             // Load messages with grouped reactions
-            var messages = await LoadMessagesWithReactions(ChannelId);
+            var messages = await LoadMessagesWithReactions(channelId);
             ViewBag.Messages = messages;
 
             return View("Index");
@@ -135,9 +136,24 @@ namespace DiscordClone.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddChanelForm(Channel model)
+        public IActionResult AddChanelForm(Channel model, string ChannelType)
         {
-            _ChannelService.CreateChannel((int)model.ServerId, model);
+            if (string.IsNullOrEmpty(ChannelType))
+            {
+                ChannelType = "text"; // Default to text channel
+            }
+
+            if (ChannelType == "voice")
+            {
+                // Create Voice Channel using ChannelService
+                _ChannelService.CreateVoiceChannel((int)model.ServerId, model.Name);
+            }
+            else
+            {
+                // Create Text Channel using existing method
+                _ChannelService.CreateChannel((int)model.ServerId, model);
+            }
+
             return RedirectToAction("Server", new { Id = model.ServerId });
         }
 
@@ -145,11 +161,13 @@ namespace DiscordClone.Controllers
         {
             var server = _ChannelService.GetServerFromChannelId(Id);
             var userId = GetUserId();
+
             ViewBag.Id = Id;
             ViewBag.UserProfile = _FriendsService.GetUserProfile(userId);
             ViewBag.Server = _ServerService.GetServerById(server.Id);
             ViewBag.Servers = _ServerService.GetUserServers(userId);
             ViewBag.Chanels = _ChannelService.GetChanels(server.Id);
+            ViewBag.VoiceChannels = _ChannelService.GetVoiceChannels(server.Id); // Add this line
 
             // Load messages with grouped reactions
             var messages = await LoadMessagesWithReactions(Id);
@@ -188,6 +206,28 @@ namespace DiscordClone.Controllers
 
             return View("Index");
         }
+
+        // For Text Channels (existing functionality)
+        public IActionResult AddTextChannel(int serverId, string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return RedirectToAction("Server", new { Id = serverId });
+
+            _ChannelService.CreateChannel(serverId, new Channel { Name = name });
+            return RedirectToAction("Server", new { Id = serverId });
+        }
+
+        // For Voice Channels (new functionality)
+        public IActionResult AddVoiceChannel(int serverId, string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return RedirectToAction("Server", new { Id = serverId });
+
+            _ChannelService.CreateVoiceChannel(serverId, name);
+            return RedirectToAction("Server", new { Id = serverId });
+        }
+
+
 
         // ========================================
         // HELPER METHOD - Load Messages with Grouped Reactions

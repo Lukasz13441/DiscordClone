@@ -25,7 +25,8 @@ namespace DiscordClone.Services
         }
 
         public int GetUserIntId(string userId)
-        {
+        {   if(_context.UserProfiles.FirstOrDefault(x => x.UserId == userId) == null)
+                return -1;
             return _context.UserProfiles.FirstOrDefault(x => x.UserId == userId).Id;
         }
 
