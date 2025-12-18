@@ -1,5 +1,3 @@
-
-
 <style>
     .reaction-picker {
         display: none; /* Hidden by default */
@@ -94,13 +92,46 @@
         <input hidden id="userInput" value="@ViewBag.UserProfile.Username" />
         <input type="text" id="messageInput" class="chat-input" placeholder="Wiadomość" />
         <script>
+            // Function to scroll to bottom of messages
+            function scrollToBottom() {
+                const messagesList = document.getElementById("messagesList");
+                messagesList.scrollTop = messagesList.scrollHeight;
+            }
+
+            // Scroll to bottom on page load
+            window.addEventListener('load', function() {
+                scrollToBottom();
+            });
+
+            // Handle Enter key to send message
             document.getElementById("messageInput").addEventListener("keydown", function (event) {
                 if (event.key === "Enter") {
                     event.preventDefault(); // Zapobiega domyślnemu zachowaniu (nowa linia)
                     document.getElementById("sendBtn").click(); // Symuluje kliknięcie przycisku Wyślij
                 }
-						});
-		</script>
+            });
+
+            // Handle send button click
+            document.getElementById("sendBtn").addEventListener("click", function() {
+                // Scroll to bottom after a short delay to allow message to be added
+                setTimeout(function() {
+                    scrollToBottom();
+                }, 100);
+            });
+
+            // Optional: Create a MutationObserver to auto-scroll when new messages are added dynamically
+            const messagesList = document.getElementById("messagesList");
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length) {
+                        scrollToBottom();
+                    }
+                });
+            });
+
+            // Start observing the messagesList for child node additions
+            observer.observe(messagesList, { childList: true });
+        </script>
         <button id="sendBtn" class="chat-send-btn">Wyślij</button>
     </div>
 </div>

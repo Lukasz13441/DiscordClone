@@ -25,6 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================================
+    // FUNKCJA AUTO-SCROLL
+    // ==========================================================
+    function scrollToBottom() {
+        const messagesList = document.getElementById("messagesList");
+        if (messagesList) {
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+    }
+
+    // ==========================================================
     // 1. POŁĄCZENIE (Jedno wspólne dla czatu i obecności)
     // ==========================================================
 
@@ -84,7 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
 
         const list = document.getElementById("messagesList");
-        if (list) list.innerHTML += html;
+        if (list) {
+            list.innerHTML += html;
+            // 🚀 AUTO-SCROLL PO DODANIU WIADOMOŚCI
+            scrollToBottom();
+        }
     });
 
     // B. Reakcje
@@ -168,6 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 👇 TU CZĘSTO JEST BŁĄD. Muszą być przecinki między każdym argumentem!
                 await connection.invoke("JoinChannel", userId, channelId);
+
+                // 🚀 AUTO-SCROLL PO ZAŁADOWANIU STRONY
+                setTimeout(scrollToBottom, 300);
 
             } else {
                 console.warn("⚠️ Brak UserID lub ChannelID - pomijam rejestrację w bazie.");

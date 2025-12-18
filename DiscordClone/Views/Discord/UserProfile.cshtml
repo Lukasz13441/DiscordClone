@@ -1,6 +1,13 @@
 ﻿@model DiscordClone.Models.UserProfile
+@{
+    Layout = null;
+}
 
-<link rel="stylesheet" href="./css/DarkTheme.css" />
+<link rel="stylesheet" href="./css/DarkTheme.css"  />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/DarkTheme.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/DiscordClone.styles.css" asp-append-version="true" />
 <style>
     .profile-settings-container {
         display: flex;
@@ -102,7 +109,6 @@
         <h2 class="sidebar-title">User Settings</h2>
 
         <button class="sidebar-btn active" data-section="profile">My Profile</button>
-        <button class="sidebar-btn" data-section="security">Security</button>
     </div>
 
 
