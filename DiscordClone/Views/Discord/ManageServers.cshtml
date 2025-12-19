@@ -1,4 +1,5 @@
 ﻿@model DiscordClone.Models.ServerViewModel 
+@using Range = DiscordClone.Models.Range;
 <link rel="stylesheet" href="./css/DarkTheme.css"/>
 <style>
     .server-settings-container {
@@ -128,10 +129,10 @@
             <h4>Server Settings</h4>
             <button class="sidebar-btn active" data-section="general">General</button>
             <button class="sidebar-btn" data-section="members">Members</button>
-            @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+            @* @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
             {
                 <button class="sidebar-btn" data-section="bans">Bans</button>
-            }
+            } *@
         </div>
     </div>
 
@@ -152,7 +153,7 @@
                 <img src="@ViewBag.Server.IconURL" id="avatarPreview" class="profile-avatar" />
                  <label class="upload-btn">
                     Change Avatar
-                <input type="file" id="avatarInput" accept="image/*" asp-for="IconURL">
+                <input type="file" hidden id="avatarInput" accept="image/*" asp-for="IconURL">
                 </label>
              </div>
 
@@ -166,40 +167,57 @@
         {
             <p>You dont have access</p>
         }
-                @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin")
-        {
+
             <!-- MEMBERS -->
             <div id="section-members" class="settings-section">
                 <h3>Server Members</h3>
                 @foreach(var member in ViewBag.Members)
                 {
-                    @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+                    <div class="member-row
+">
+                        <img src="@member.User.AvatarURL" class="avatar-small" />
+                        <span class="member-name">@member.User.Username</span>
+                        <span class="member-role">@member.Range</span>
+                        
+                    @* @if (ViewBag.Role != "Member" || member.Range != Range.Owner)
                     {
                         //ban button
-                    }
+                        <form asp-action="BanUser" method="post" style="display:inline;">
+                            <input type="hidden" name="serverId" value="@ViewBag.Server.Id" />
+                            <input type="hidden" name="userId" value="@member.Id" />
+                            <button type="submit" class="ban-btn">Ban</button>
+                            </form>
+                    } *@
+                    </div>
 
                 }
                 <div class="member-list">
 
                 </div>
             </div>
-        }
-        else
-        {
-            <p>You dont have access</p>
-        }
 
-        @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
+
+        @* @if (ViewBag.Role == "Owner" || ViewBag.Role == "Admin" || ViewBag.Role == "Moderator")
         {
             <!-- BANNED USERS -->
             <div id="section-bans" class="settings-section">
                 <h3>Banned Users</h3>
 
                 <div class="ban-list">
-
+                    @foreach(var member in ViewBag.Members)
+                {
+                        if (member.IsBanned){
+                    <div class="member-row">
+                        <img src="@member.IconURL" class="avatar-small" />
+                        <span class="member-name">@member.Username</span>
+                        <span class="member-role">@member.Role</span>
+                        </div>
+                        }
+                }
                 </div>
             </div>
-        }
+        } *@
     </div>
 </div>
 <a asp-controller="Discord" asp-action="Index" class="close-page-btn-fixed"><button id="closePageBtn" class="close-page-btn-fixed">✖</button></a>
+<script src="/js/menagrserver.js"></script>
